@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/towercrane_mainlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:background="#550055">
+
+    <FrameLayout
+        android:id="@+id/towercrane_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/towercrane_side0"
+            android:scaleType="fitXY"/>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/towercrane_floatbtn"
+        android:layout_width="@dimen/layout_float_button_length"
+        android:layout_height="@dimen/layout_float_button_length"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="@dimen/layout_float_button_margin_top"
+        android:layout_marginEnd="@dimen/layout_float_button_margin_right"/>
+
+    <TextView
+        android:id="@+id/towercrane_floatbtntext"
+        android:layout_width="@dimen/layout_float_button_text_length"
+        android:layout_height="@dimen/layout_float_button_text_length"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="@dimen/layout_float_button_text_margin_top"
+        android:layout_marginEnd="@dimen/layout_float_button_text_margin_right"
+        android:textSize="13sp"
+        android:gravity="center"/>
+
+</FrameLayout>

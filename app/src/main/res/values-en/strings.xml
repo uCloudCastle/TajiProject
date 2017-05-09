@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TajiProject</string>
+    <string name="action_about">About</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string name="page_towercrane">Tower Crane Status</string>
+    <string name="page_constructionsite">Construction Site Monitor</string>
+    <string name="page_configure">Tower Crane Configure</string>
+    <string name="page_history">History Recorder</string>
+    <string name="page_diagram">Data Diagram</string>
+    <string name="page_setting">Settings</string>
+
+    <string name="floatbtn_monitor">Monitor View</string>
+    <string name="floatbtn_2d">2 D View</string>
+    <string name="floatbtn_3d">3 D View</string>
+    <string name="floatbtn_loading">Loading</string>
+</resources>

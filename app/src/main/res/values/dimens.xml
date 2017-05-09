@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="sliding_menu_width">80dp</dimen>
+
+    <dimen name="layout_float_button_length">48dp</dimen>
+    <dimen name="layout_float_button_margin_top">16dp</dimen>
+    <dimen name="layout_float_button_margin_right">16dp</dimen>
+    <dimen name="layout_float_button_ring_width">2dp</dimen>
+
+    <dimen name="layout_float_button_text_length">32dp</dimen>
+    <dimen name="layout_float_button_text_margin_top">24dp</dimen>
+    <dimen name="layout_float_button_text_margin_right">24dp</dimen>
+</resources>
