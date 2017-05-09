@@ -1,8 +1,6 @@
 # TajiProject
 <br>
-
 ## This Project is Designed for Tower Crane 2D/3D Monitor, Integrate 3D scenes exported from Unity5.5.
-
 <br><br>
 
 Support by And Thanks:<br>
