@@ -1,14 +1,17 @@
 # TajiProject
-
-This Project is Designed for Tower Crane 2D/3D Monitor,
+<br>
+This Project is Designed for Tower Crane 2D/3D Monitor,<br>
 Integrate 3D scenes exported from Unity3d.
+<br>
+Support by:<br>
+* [Yalantis/Side-Menu.Android]
+(https://github.com/Yalantis/Side-Menu.Android)
+<br>
+* [pedant/sweet-alert-dialog]
+(https://github.com/pedant/sweet-alert-dialog)
+<br>
+* [Sefford/CircularProgressDrawable]
+(ttps://github.com/Sefford/CircularProgressDrawable)
+<br>
 
-Support by:
-Yalantis/Side-Menu.Android:
-https://github.com/Yalantis/Side-Menu.Android
-
-pedant/sweet-alert-dialog:
-https://github.com/pedant/sweet-alert-dialog
-
-Sefford/CircularProgressDrawable:
-https://github.com/Sefford/CircularProgressDrawable
+3D Tower Crane:
