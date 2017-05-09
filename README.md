@@ -4,21 +4,21 @@
 <br><br>
 
 Support by:<br>
+
 * [Yalantis/Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)
-<br>
 * [pedant/sweet-alert-dialog](https://github.com/pedant/sweet-alert-dialog)
-<br>
 * [Sefford/CircularProgressDrawable](https://github.com/Sefford/CircularProgressDrawable)
-<br><br>
+
+<br>
 
 Monitor View:
-![](TajiProject/githubImg/monitor.png)
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/monitor.png)
 
 2D View:
-![](TajiProject/githubImg/2d.png)
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d.png)
 
 3DView:
-![](TajiProject/githubImg/3d.png)
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/3d.png)
 
 About View:
-![](TajiProject/githubImg/about.png)
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/about.png)
