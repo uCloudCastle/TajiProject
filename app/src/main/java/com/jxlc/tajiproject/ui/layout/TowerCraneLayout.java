@@ -116,7 +116,8 @@ public class TowerCraneLayout extends FrameLayout {
     private void switchView() {
         FrameLayout container = (FrameLayout)findViewById(R.id.towercrane_container);
         if (container.getChildCount() == 1) {
-            container.addView(mUnityPlayer);
+            FrameLayout.LayoutParams lp = new LayoutParams(container.getWidth(), container.getHeight());
+            container.addView(mUnityPlayer, lp);
             if (!firstLoadUnity) {
                 mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_monitor));
             }

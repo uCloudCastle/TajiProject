@@ -55,13 +55,13 @@ public class TowerCrane2DView extends View {
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
         } else {
-            width = mTowerCraneInfo.getFrontArmLength() * 2;
+            width = (int)(mTowerCraneInfo.getFrontArmLength() * 2);
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
         } else {
-            height = mTowerCraneInfo.getFrontArmLength() * 2;
+            height = (int)(mTowerCraneInfo.getFrontArmLength() * 2);
         }
         setMeasuredDimension(width, height);
     }

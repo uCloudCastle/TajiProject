@@ -13,4 +13,6 @@
     <dimen name="layout_float_button_text_length">32dp</dimen>
     <dimen name="layout_float_button_text_margin_top">24dp</dimen>
     <dimen name="layout_float_button_text_margin_right">24dp</dimen>
+
+    <dimen name="construction_framelayout_min_width">400dp</dimen>
 </resources>

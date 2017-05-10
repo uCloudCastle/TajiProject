@@ -24,13 +24,13 @@ public class TowerCraneInfo {
     private int identifier;          // id
     private String modelName;        // 型号名称
 
-    private int coordinateX;         // x
-    private int coordinateY;         // y
-    private int frontArmLength;      // 前臂长
-    private int rearArmLength;       // 后臂长
-    private int armToGroundHeight;   // 塔机高度
-    private int trolleyDistance;     // 小车行距
-    private int ropeLength;          // 吊绳长度
+    private float coordinateX;         // x
+    private float coordinateY;         // y
+    private float frontArmLength;      // 前臂长
+    private float rearArmLength;       // 后臂长
+    private float armToGroundHeight;   // 塔机高度
+    private float trolleyDistance;     // 小车行距
+    private float ropeLength;          // 吊绳长度
     private float angle;             // 旋臂角度
 
     private boolean liftWeightLimiter;  // 起升重量限制器
@@ -52,8 +52,8 @@ public class TowerCraneInfo {
         this.angle = angle;
     }
 
-    public TowerCraneInfo(int id, String modelName, int coordinateX, int coordinateY, int frontArmLength, int rearArmLength,
-                          int armToGroundHeight, int trolleyDistance, int ropeLength, float angle, boolean isLiftWeightLimiterWorkFine,
+    public TowerCraneInfo(int id, String modelName, float coordinateX, float coordinateY, float frontArmLength, float rearArmLength,
+                          float armToGroundHeight, float trolleyDistance, float ropeLength, float angle, boolean isLiftWeightLimiterWorkFine,
                           boolean isLiftHeightLimiterWorkFine, boolean isTorqueLimiterWorkFine, boolean isOverstrokeLimiterWorkFine, boolean isSlewingLimiterWorkFine) {
         this.identifier = id;
         this.modelName = modelName;
@@ -92,59 +92,59 @@ public class TowerCraneInfo {
         this.modelName = modelName;
     }
 
-    public int getCoordinateX() {
+    public float getCoordinateX() {
         return coordinateX;
     }
 
-    public void setCoordinateX(int coordinateX) {
+    public void setCoordinateX(float coordinateX) {
         this.coordinateX = coordinateX;
     }
 
-    public int getCoordinateY() {
+    public float getCoordinateY() {
         return coordinateY;
     }
 
-    public void setCoordinateY(int coordinateY) {
+    public void setCoordinateY(float coordinateY) {
         this.coordinateY = coordinateY;
     }
 
-    public int getFrontArmLength() {
+    public float getFrontArmLength() {
         return frontArmLength;
     }
 
-    public void setFrontArmLength(int frontArmLength) {
+    public void setFrontArmLength(float frontArmLength) {
         this.frontArmLength = frontArmLength;
     }
 
-    public int getRearArmLength() {
+    public float getRearArmLength() {
         return rearArmLength;
     }
 
-    public void setRearArmLength(int rearArmLength) {
+    public void setRearArmLength(float rearArmLength) {
         this.rearArmLength = rearArmLength;
     }
 
-    public int getTrolleyDistance() {
+    public float getTrolleyDistance() {
         return trolleyDistance;
     }
 
-    public void setTrolleyDistance(int trolleyDistance) {
+    public void setTrolleyDistance(float trolleyDistance) {
         this.trolleyDistance = trolleyDistance;
     }
 
-    public int getArmToGroundHeight() {
+    public float getArmToGroundHeight() {
         return armToGroundHeight;
     }
 
-    public void setArmToGroundHeight(int armToGroundHeight) {
+    public void setArmToGroundHeight(float armToGroundHeight) {
         this.armToGroundHeight = armToGroundHeight;
     }
 
-    public int getRopeLength() {
+    public float getRopeLength() {
         return ropeLength;
     }
 
-    public void setRopeLength(int ropeLength) {
+    public void setRopeLength(float ropeLength) {
         this.ropeLength = ropeLength;
     }
 

@@ -144,8 +144,11 @@ public class ConstructionSiteLayout extends FrameLayout {
 
     private void switchView() {
         FrameLayout container = (FrameLayout)findViewById(R.id.constructionsite_container);
-        if (container.getChildCount() == 1) {
-            container.addView(mUnityPlayer);
+        if (container.getChildCount() == 3) {
+            FrameLayout.LayoutParams lp = new LayoutParams(container.getWidth(), container.getHeight());
+            container.addView(mUnityPlayer, lp);
+            mFloatBtn.bringToFront();
+            mFloatBtnTextView.bringToFront();
             if (!firstLoadUnity) {
                 mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_2d));
             }
@@ -156,9 +159,9 @@ public class ConstructionSiteLayout extends FrameLayout {
     }
 
     private void resizeSiteAndTowerCrane() {
-        FrameLayout cLayout = (FrameLayout)findViewById(R.id.constructionsite_container);
-        int cWidth = cLayout.getWidth();
-        int cHeight = cLayout.getHeight();
+        FrameLayout container = (FrameLayout)findViewById(R.id.constructionsite_container);
+        int cWidth = container.getWidth();
+        int cHeight = container.getHeight();
         LogUtils.d("" + cWidth + " " + cHeight);
 
         float wRate = (float)cWidth / (float)EnvironmentInfo.getInstance().getConstructionSiteWidth();
@@ -181,8 +184,8 @@ public class ConstructionSiteLayout extends FrameLayout {
 //            tclp.setMargins((int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate) - (int)(info.getFrontArmLength() * (1-scaleRate)),
 //                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate)  - (int)(info.getFrontArmLength() * (1-scaleRate)),
 //                    0, 0);
-            tclp.setMargins((int)(info.getCoordinateX() * scaleRate) - info.getFrontArmLength(),
-                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY()) * scaleRate)  - info.getFrontArmLength(),
+            tclp.setMargins((int)(info.getCoordinateX() * scaleRate - info.getFrontArmLength()),
+                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY()) * scaleRate  - info.getFrontArmLength()),
                     0, 0);
             mSiteBorder.addView(tcView, tclp);
             LogUtils.d("333" + (int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate) + " " + (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate));
