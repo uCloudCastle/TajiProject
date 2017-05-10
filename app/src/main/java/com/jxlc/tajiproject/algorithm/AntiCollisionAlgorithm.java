@@ -5,22 +5,22 @@ import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static android.R.attr.type;
+import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_1REACH2;
+import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_2REACH1;
+import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_ONLYFRONT;
+import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_REACHEACHOTHER;
 
 /**
  * Created by Randal on 2017-05-08.
  */
 
 public class AntiCollisionAlgorithm {
-    private static final String INTERSECT_TYPE_ONLYFRONT = "1";
-    private static final String INTERSECT_TYPE_2REACH1 = "2";
-    private static final String INTERSECT_TYPE_1REACH2 = "3";
-    private static final String INTERSECT_TYPE_REACHEACHOTHER = "4";
-
     private List<TowerCraneInfo> mTCInfoList;
     private List<AntiCollisionListener> mListeners;
-    private List<IntersectPair> mPairList;
-    private HashMap<IntersectPair, String> mPairMap;
+    private List<IntersectKey> mPairList;
+    private HashMap<IntersectKey, IntersectValue> mPairMap;
 
     private AntiCollisionAlgorithm(){
         mTCInfoList = new ArrayList<>();
@@ -72,9 +72,6 @@ public class AntiCollisionAlgorithm {
 
         generatePairMap();
         // generateMinMaxIntersectAngle
-        for (Map.Entry<IntersectPair, String> entry : mPairMap.entrySet()) {
-            //computeMinMaxAngle();
-        }
 
 
 
@@ -90,7 +87,7 @@ public class AntiCollisionAlgorithm {
                 float dy = mTCInfoList.get(i).getCoordinateY() - mTCInfoList.get(j).getCoordinateY();
                 double dis = Math.sqrt(dx * dx + dy * dy);
 
-                IntersectPair pair = new IntersectPair(mTCInfoList.get(i).getIdentifier(),
+                IntersectKey pair = new IntersectKey(mTCInfoList.get(i).getIdentifier(),
                         mTCInfoList.get(j).getIdentifier(), dis);
                 if (dis < mTCInfoList.get(i).getFrontArmLength() + mTCInfoList.get(j).getFrontArmLength()) {
                     if (!mPairList.contains(pair)) {
@@ -107,46 +104,116 @@ public class AntiCollisionAlgorithm {
     }
 
     private void generatePairMap() {
-        for (IntersectPair p : mPairList) {
-            TowerCraneInfo info1 = getTowerCraneInfoById(p.idOne);
-            TowerCraneInfo info2 = getTowerCraneInfoById(p.idTwo);
+        for (IntersectKey key : mPairList) {
+            TowerCraneInfo info1 = getTowerCraneInfoById(key.idOne);
+            TowerCraneInfo info2 = getTowerCraneInfoById(key.idTwo);
 
             float lenFB = info1.getFrontArmLength() + info2.getRearArmLength();
             float lenBF = info1.getRearArmLength() + info2.getFrontArmLength();
-            double dis = p.distance;
+            double dis = key.distance;
 
-            int type = 0;
             if (dis >= lenFB && dis >= lenBF) {                   // 前臂交叉
-                type = 1;
-                mPairMap.put(p, INTERSECT_TYPE_ONLYFRONT);
+                IntersectValue value = new IntersectValue();
+                value.intersectType = INTERSECT_TYPE_ONLYFRONT;
+                putAngle2IntersectValue(value, info1, info2, true);
+                mPairMap.put(key, value);
             } else if (dis >= lenFB && dis < lenBF) {            // #2 覆盖 #1 后臂圆
-                type = 2;
-                mPairMap.put(p, INTERSECT_TYPE_2REACH1);
+
             } else if (dis < lenFB && dis >= lenBF) {            // #1 覆盖 #2 后臂圆
-                type = 3;
-                mPairMap.put(p, INTERSECT_TYPE_1REACH2);
             } else {                                             // 相互覆盖后臂圆
-                type = 4;
-                mPairMap.put(p, INTERSECT_TYPE_REACHEACHOTHER);
             }
 
             for (AntiCollisionListener listener : mListeners) {
-                listener.onHasIntersection(p.idOne, p.idTwo, type);
+                listener.onHasIntersection(key.idOne, key.idTwo, type);
             }
         }
     }
 
-    private void computeMinMaxAngle(int type, float x1, float y1,
-                                    float x2, float y2, float len1, float len2) {
-        switch (type) {
-            case 1: {
-
-                break;
-            }
-            case 2: {
-                break;
-            }
+    // which will according type to put master and the other tower crane value
+    // so if isMaster is true, it will be execute twice
+    private void putAngle2IntersectValue(IntersectValue value, TowerCraneInfo info1,
+                                         TowerCraneInfo info2, boolean isMaster) {
+        int comType = value.intersectType;
+        if (!isMaster) {
+            if (comType == INTERSECT_TYPE_2REACH1) comType = INTERSECT_TYPE_1REACH2;
+            if (comType == INTERSECT_TYPE_1REACH2) comType = INTERSECT_TYPE_2REACH1;
         }
+
+        float x1 = info1.getCoordinateX();
+        float x2 = info2.getCoordinateX();
+        float y1 = info1.getCoordinateY();
+        float y2 = info2.getCoordinateY();
+
+        switch (comType) {
+            case INTERSECT_TYPE_ONLYFRONT: {
+                float L1 = info1.getFrontArmLength();
+                float L2 = info2.getFrontArmLength();
+                AngleSaver saver = new AngleSaver();
+                obtainAngle(x1, x2, y1, y2, L1, L2, saver);
+                if (isMaster) {
+                    value.towerOneFFAngleMin = saver.min;
+                    value.towerOneFFAngleMax = saver.max;
+                } else {
+                    value.towerTwoFFAngleMin = saver.min;
+                    value.towerTwoFFAngleMax = saver.max;
+                }
+                break;
+            }
+            case INTERSECT_TYPE_2REACH1: {
+                float L1 = info1.getRearArmLength();
+                float L2 = info2.getFrontArmLength();
+                AngleSaver saver = new AngleSaver();
+                obtainAngle(x1, x2, y1, y2, L1, L2, saver);
+                if (isMaster) {
+                    value.towerOneFFAngleMin = saver.min;
+                    value.towerOneFFAngleMax = saver.max;
+                } else {
+                    value.towerTwoFFAngleMin = saver.min;
+                    value.towerTwoFFAngleMax = saver.max;
+                }
+                break;
+            }
+            case INTERSECT_TYPE_1REACH2: {
+                break;
+            }
+            case INTERSECT_TYPE_REACHEACHOTHER: {
+                break;
+            }
+            default:
+                break;
+        }
+
+        if (isMaster) {
+            isMaster = false;
+            putAngle2IntersectValue(value, info1, info2, isMaster);
+        }
+    }
+
+    private void obtainAngle(float x1, float x2, float y1, float y2, float L1, float L2, AngleSaver saver) {
+        float angle_AB, angle_1, angle_2, angle_3;
+        float x_m, y_m;
+        float L_m, L_qie;
+        x_m = x2 - x1;
+        y_m = y2 - y1;
+        L_m = (float)Math.sqrt(x_m * x_m + y_m * y_m);
+        angle_AB = (float)Math.atan2(y_m, x_m);                                     //范围在(-PI,PI)
+
+        if (L_m > L2) {
+            L_qie = L_m * L_m - L2 * L2;
+            if (L_qie > (L1 * L1)) {
+                angle_2 = (float)Math.acos((L_m * L_m + L1 * L1 - L2 * L2) / (2 * L_m * L1));//范围在(0,PI)
+                angle_3 = angle_2;
+            } else {
+                angle_1 = (float)Math.asin(L2 / L_m);
+                angle_3 = angle_1;
+            }
+        } else {
+            angle_2 = (float)Math.acos((L_m * L_m + L1 * L1 - L2 * L2) / (2 * L_m * L1));//范围在(0,PI)
+            angle_3 = angle_2;
+        }
+
+        saver.min = (angle_AB - angle_3) * 180 / (float) Math.PI;
+        saver.max = (angle_AB + angle_3) * 180 / (float) Math.PI;
     }
 
     private TowerCraneInfo getTowerCraneInfoById(int id) {
