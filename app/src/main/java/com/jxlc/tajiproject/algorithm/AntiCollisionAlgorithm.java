@@ -1,12 +1,15 @@
 package com.jxlc.tajiproject.algorithm;
 
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
+import com.randal.aviana.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import static android.R.attr.type;
 import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_1REACH2;
 import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_2REACH1;
 import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_ONLYFRONT;
@@ -16,17 +19,21 @@ import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_REACH
  * Created by Randal on 2017-05-08.
  */
 
-public class AntiCollisionAlgorithm {
+public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener {
     private List<TowerCraneInfo> mTCInfoList;
     private List<AntiCollisionListener> mListeners;
     private List<IntersectKey> mPairList;
     private HashMap<IntersectKey, IntersectValue> mPairMap;
+
+    private Timer mTimer;
+    private int interval = 1000;      // ms
 
     private AntiCollisionAlgorithm(){
         mTCInfoList = new ArrayList<>();
         mListeners = new ArrayList<>();
         mPairList = new ArrayList<>();
         mPairMap = new HashMap<>();
+        mTimer = new Timer();
     }
     private static class SingletonHolder {
         static final AntiCollisionAlgorithm INSTANCE = new AntiCollisionAlgorithm();
@@ -43,22 +50,30 @@ public class AntiCollisionAlgorithm {
         mListeners.remove(l);
     }
 
+    public List<TowerCraneInfo> getTCInfoList() {
+        return mTCInfoList;
+    }
+
     public void setTowerCraneList(List<TowerCraneInfo> list) {
         mTCInfoList = list;
+        updatePairMap();
     }
 
     public void addTowerCrane(TowerCraneInfo info) {
         mTCInfoList.add(info);
+        updatePairMap();
     }
 
-    public boolean removeTowerCrane(TowerCraneInfo info) {
-        return mTCInfoList.remove(info);
+    public void removeTowerCrane(TowerCraneInfo info) {
+        mTCInfoList.remove(info);
+        updatePairMap();
     }
 
     public boolean removeTowerCraneById(int id) {
         for (TowerCraneInfo info : mTCInfoList) {
             if (info.getIdentifier() == id) {
                 mTCInfoList.remove(info);
+                updatePairMap();
                 return true;
             }
         }
@@ -66,18 +81,70 @@ public class AntiCollisionAlgorithm {
     }
 
     public void run() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (mPairMap.isEmpty()) {
+                    return;
+                }
+
+                boolean intersect = false;
+                for (Map.Entry<IntersectKey, IntersectValue> entry : mPairMap.entrySet()) {
+                    IntersectKey key = entry.getKey();
+                    IntersectValue value = entry.getValue();
+                    int type = value.intersectType;
+                    LogUtils.d("key = " + key + " value = " + value);
+
+                    switch (type) {
+                        case INTERSECT_TYPE_ONLYFRONT: {
+                            intersect = checkRuntimeAngleMF2F(key, value);
+                            break;
+                        }
+                        case INTERSECT_TYPE_2REACH1: {
+                            boolean b1 = checkRuntimeAngleMF2F(key, value);
+                            boolean b2 = checkRuntimeAngleMB2F(key, value);
+                            intersect = (b1 || b2);
+                            break;
+                        }
+                        case INTERSECT_TYPE_1REACH2: {
+                            boolean b1 = checkRuntimeAngleMF2F(key, value);
+                            boolean b2 = checkRuntimeAngleMF2B(key, value);
+                            intersect = (b1 || b2);
+                            break;
+                        }
+                        case INTERSECT_TYPE_REACHEACHOTHER: {
+                            boolean b1 = checkRuntimeAngleMF2F(key, value);
+                            boolean b2 = checkRuntimeAngleMB2F(key, value);
+                            boolean b3 = checkRuntimeAngleMF2B(key, value);
+                            intersect = (b1 || b2 || b3);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+
+                if (!intersect) {
+                    return;
+                }
+                checkCollision();
+            }
+        };
+        mTimer.scheduleAtFixedRate(task, 0, interval);
+    }
+
+    public void stop() {
+        mTimer.cancel();
+    }
+
+    // call when Tower Crane List changed
+    // Or the stable data of one of them changed
+    private void updatePairMap() {
         if (updateIntersectPairs() == 0) {
+            mPairMap.clear();
             return;
         }
-
         generatePairMap();
-        // generateMinMaxIntersectAngle
-
-
-
-
-        // monitorAngle
-        // checkPengzhuang.
     }
 
     private int updateIntersectPairs() {
@@ -112,19 +179,36 @@ public class AntiCollisionAlgorithm {
             float lenBF = info1.getRearArmLength() + info2.getFrontArmLength();
             double dis = key.distance;
 
+            IntersectValue value = new IntersectValue();
             if (dis >= lenFB && dis >= lenBF) {                   // 前臂交叉
-                IntersectValue value = new IntersectValue();
                 value.intersectType = INTERSECT_TYPE_ONLYFRONT;
                 putAngle2IntersectValue(value, info1, info2, true);
                 mPairMap.put(key, value);
             } else if (dis >= lenFB && dis < lenBF) {            // #2 覆盖 #1 后臂圆
-
+                value.intersectType = INTERSECT_TYPE_ONLYFRONT;
+                putAngle2IntersectValue(value, info1, info2, true);
+                value.intersectType = INTERSECT_TYPE_2REACH1;
+                putAngle2IntersectValue(value, info1, info2, true);
+                mPairMap.put(key, value);
             } else if (dis < lenFB && dis >= lenBF) {            // #1 覆盖 #2 后臂圆
+                value.intersectType = INTERSECT_TYPE_ONLYFRONT;
+                putAngle2IntersectValue(value, info1, info2, true);
+                value.intersectType = INTERSECT_TYPE_1REACH2;
+                putAngle2IntersectValue(value, info1, info2, true);
+                mPairMap.put(key, value);
             } else {                                             // 相互覆盖后臂圆
+                value.intersectType = INTERSECT_TYPE_ONLYFRONT;
+                putAngle2IntersectValue(value, info1, info2, true);
+                value.intersectType = INTERSECT_TYPE_2REACH1;
+                putAngle2IntersectValue(value, info1, info2, true);
+                value.intersectType = INTERSECT_TYPE_1REACH2;
+                putAngle2IntersectValue(value, info1, info2, true);
+                value.intersectType = INTERSECT_TYPE_REACHEACHOTHER;
+                mPairMap.put(key, value);
             }
 
             for (AntiCollisionListener listener : mListeners) {
-                listener.onHasIntersection(key.idOne, key.idTwo, type);
+                listener.onHasIntersection(key.idOne, key.idTwo, value);
             }
         }
     }
@@ -136,7 +220,7 @@ public class AntiCollisionAlgorithm {
         int comType = value.intersectType;
         if (!isMaster) {
             if (comType == INTERSECT_TYPE_2REACH1) comType = INTERSECT_TYPE_1REACH2;
-            if (comType == INTERSECT_TYPE_1REACH2) comType = INTERSECT_TYPE_2REACH1;
+            else if (comType == INTERSECT_TYPE_1REACH2) comType = INTERSECT_TYPE_2REACH1;
         }
 
         float x1 = info1.getCoordinateX();
@@ -165,15 +249,26 @@ public class AntiCollisionAlgorithm {
                 AngleSaver saver = new AngleSaver();
                 obtainAngle(x1, x2, y1, y2, L1, L2, saver);
                 if (isMaster) {
-                    value.towerOneFFAngleMin = saver.min;
-                    value.towerOneFFAngleMax = saver.max;
+                    value.towerOneBFAngleMin = saver.min;
+                    value.towerOneBFAngleMax = saver.max;
                 } else {
-                    value.towerTwoFFAngleMin = saver.min;
-                    value.towerTwoFFAngleMax = saver.max;
+                    value.towerTwoBFAngleMin = saver.min;
+                    value.towerTwoBFAngleMax = saver.max;
                 }
                 break;
             }
             case INTERSECT_TYPE_1REACH2: {
+                float L1 = info1.getFrontArmLength();
+                float L2 = info2.getRearArmLength();
+                AngleSaver saver = new AngleSaver();
+                obtainAngle(x1, x2, y1, y2, L1, L2, saver);
+                if (isMaster) {
+                    value.towerOneFBAngleMin = saver.min;
+                    value.towerOneFBAngleMax = saver.max;
+                } else {
+                    value.towerTwoFBAngleMin = saver.min;
+                    value.towerTwoFBAngleMax = saver.max;
+                }
                 break;
             }
             case INTERSECT_TYPE_REACHEACHOTHER: {
@@ -184,8 +279,7 @@ public class AntiCollisionAlgorithm {
         }
 
         if (isMaster) {
-            isMaster = false;
-            putAngle2IntersectValue(value, info1, info2, isMaster);
+            putAngle2IntersectValue(value, info2, info1, false);
         }
     }
 
@@ -216,6 +310,129 @@ public class AntiCollisionAlgorithm {
         saver.max = (angle_AB + angle_3) * 180 / (float) Math.PI;
     }
 
+    private boolean checkRuntimeAngleMF2F(IntersectKey key, IntersectValue value) {
+        // master
+        float angle = getTowerCraneInfoById(key.idOne).getAngle();
+        if (value.towerOneFFAngleMin <= angle && angle < value.towerOneFFAngleMax) {
+            if (!value.towerOneFFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontEnterIntersection(key.idOne, key.idTwo, true);
+                }
+                value.towerOneFFMark = true;
+            }
+        } else {
+            if (value.towerOneFFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontLeaveIntersection(key.idOne, key.idTwo, true);
+                }
+                value.towerOneFFMark = false;
+            }
+        }
+
+        // flower
+        angle = getTowerCraneInfoById(key.idTwo).getAngle();
+        if (value.towerTwoFFAngleMin <= angle && angle < value.towerTwoFFAngleMax) {
+            if (!value.towerTwoFFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontEnterIntersection(key.idTwo, key.idOne, true);
+                }
+                value.towerOneFFMark = true;
+            }
+        } else {
+            if (value.towerTwoFFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontLeaveIntersection(key.idTwo, key.idOne, true);
+                }
+                value.towerTwoFFMark = false;
+            }
+        }
+
+        return (value.towerOneFFMark && value.towerTwoFFMark);
+    }
+
+    private boolean checkRuntimeAngleMB2F(IntersectKey key, IntersectValue value) {
+        // master
+        float angle = getTowerCraneInfoById(key.idOne).getAngle();
+        if (value.towerOneBFAngleMin <= angle && angle < value.towerOneBFAngleMax) {
+            if (!value.towerOneBFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onRearEnterIntersection(key.idOne, key.idTwo);
+                }
+                value.towerOneBFMark = true;
+            }
+        } else {
+            if (value.towerOneBFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onRearLeaveIntersection(key.idOne, key.idTwo);
+                }
+                value.towerOneBFMark = false;
+            }
+        }
+
+        // flower
+        angle = getTowerCraneInfoById(key.idTwo).getAngle();
+        if (value.towerTwoFBAngleMin <= angle && angle < value.towerTwoFBAngleMax) {
+            if (!value.towerTwoFBMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontEnterIntersection(key.idTwo, key.idOne, false);
+                }
+                value.towerTwoFBMark = true;
+            }
+        } else {
+            if (value.towerTwoFBMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontLeaveIntersection(key.idTwo, key.idOne, false);
+                }
+                value.towerTwoFBMark = false;
+            }
+        }
+        return (value.towerOneBFMark && value.towerTwoFBMark);
+    }
+
+    private boolean checkRuntimeAngleMF2B(IntersectKey key, IntersectValue value) {
+        // master
+        float angle = getTowerCraneInfoById(key.idOne).getAngle();
+        if (value.towerOneFBAngleMin <= angle && angle < value.towerOneFBAngleMax) {
+            if (!value.towerOneFBMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontEnterIntersection(key.idOne, key.idTwo, false);
+                }
+                value.towerOneFBMark = true;
+            }
+        } else {
+            if (value.towerOneFBMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onFrontLeaveIntersection(key.idOne, key.idTwo, false);
+                }
+                value.towerOneFBMark = false;
+            }
+        }
+
+        // flower
+        angle = getTowerCraneInfoById(key.idTwo).getAngle();
+        if (value.towerTwoBFAngleMin <= angle && angle < value.towerTwoBFAngleMax) {
+            if (!value.towerTwoBFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onRearEnterIntersection(key.idTwo, key.idOne);
+                }
+                value.towerOneBFMark = true;
+            }
+        } else {
+            if (value.towerTwoBFMark) {
+                for (AntiCollisionListener listener : mListeners) {
+                    listener.onRearLeaveIntersection(key.idTwo, key.idOne);
+                }
+                value.towerTwoBFMark = false;
+            }
+        }
+
+        return (value.towerOneFBMark && value.towerTwoBFMark);
+    }
+
+    private void checkCollision() {
+
+    }
+
     private TowerCraneInfo getTowerCraneInfoById(int id) {
         for (TowerCraneInfo info : mTCInfoList) {
             if(info.getIdentifier() == id) {
@@ -225,4 +442,8 @@ public class AntiCollisionAlgorithm {
         return null;
     }
 
+    @Override
+    public void onStableInfoChanged() {
+        updatePairMap();
+    }
 }

@@ -21,6 +21,7 @@ package com.jxlc.tajiproject.bean;
  */
 
 public class TowerCraneInfo {
+    private StableInfoListener mListener;
     private int identifier;          // id
     private String modelName;        // 型号名称
 
@@ -41,15 +42,8 @@ public class TowerCraneInfo {
 
     public TowerCraneInfo(int id, int coordinateX, int coordinateY, int frontArmLength, int rearArmLength,
                           int armToGroundHeight, int trolleyDistance, int ropeLength, float angle) {
-        this.identifier = id;
-        this.coordinateX = coordinateX;
-        this.coordinateY = coordinateY;
-        this.frontArmLength = frontArmLength;
-        this.rearArmLength = rearArmLength;
-        this.armToGroundHeight = armToGroundHeight;
-        this.trolleyDistance = trolleyDistance;
-        this.ropeLength = ropeLength;
-        this.angle = angle;
+        this(id, "ZSL750", coordinateX, coordinateY, frontArmLength, rearArmLength, armToGroundHeight, trolleyDistance,
+                ropeLength, angle, true, true, true, true, true);
     }
 
     public TowerCraneInfo(int id, String modelName, float coordinateX, float coordinateY, float frontArmLength, float rearArmLength,
@@ -76,6 +70,10 @@ public class TowerCraneInfo {
         return new TowerCraneInfo(0, "ZSL750", 200, 200, 60, 5, 100, 40, 20, 60, true, true, true, true, true);
     }
 
+    public void setListener(StableInfoListener l) {
+        mListener = l;
+    }
+
     public int getIdentifier() {
         return identifier;
     }
@@ -98,6 +96,7 @@ public class TowerCraneInfo {
 
     public void setCoordinateX(float coordinateX) {
         this.coordinateX = coordinateX;
+        mListener.onStableInfoChanged();
     }
 
     public float getCoordinateY() {
@@ -106,6 +105,7 @@ public class TowerCraneInfo {
 
     public void setCoordinateY(float coordinateY) {
         this.coordinateY = coordinateY;
+        mListener.onStableInfoChanged();
     }
 
     public float getFrontArmLength() {
@@ -114,6 +114,7 @@ public class TowerCraneInfo {
 
     public void setFrontArmLength(float frontArmLength) {
         this.frontArmLength = frontArmLength;
+        mListener.onStableInfoChanged();
     }
 
     public float getRearArmLength() {
@@ -122,6 +123,7 @@ public class TowerCraneInfo {
 
     public void setRearArmLength(float rearArmLength) {
         this.rearArmLength = rearArmLength;
+        mListener.onStableInfoChanged();
     }
 
     public float getTrolleyDistance() {
@@ -215,5 +217,9 @@ public class TowerCraneInfo {
                 ", overstrokeLimiter=" + overstrokeLimiter +
                 ", slewingLimiter=" + slewingLimiter +
                 '}';
+    }
+
+    public interface StableInfoListener {
+        void onStableInfoChanged();
     }
 }

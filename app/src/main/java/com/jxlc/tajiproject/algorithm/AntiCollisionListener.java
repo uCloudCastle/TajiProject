@@ -5,7 +5,9 @@ package com.jxlc.tajiproject.algorithm;
  */
 
 interface AntiCollisionListener {
-    void onHasIntersection(int id1, int id2, int type);
-    void onEnterIntersection(int majorId, int affectedId);
-    void onLeaveIntersection(int majorId, int affectedId);
+    void onHasIntersection(int id1, int id2, IntersectValue value);
+    void onFrontEnterIntersection(int majorId, int affectedId, boolean isOutCircle);
+    void onRearEnterIntersection(int majorId, int affectedId);
+    void onFrontLeaveIntersection(int majorId, int affectedId, boolean isOutCircle);
+    void onRearLeaveIntersection(int majorId, int affectedId);
 }
