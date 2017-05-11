@@ -30,6 +30,8 @@ import com.unity3d.player.UnityPlayer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.mode;
+
 /**
  * Created by randal on 2017/5/4.
  */
@@ -48,6 +50,8 @@ public class ConstructionSiteLayout extends FrameLayout {
     private float scaleRate;
 
     private boolean firstLoadUnity = true;
+    int touchNum = 0;
+    float oldDist = 0.0f;
 
     public ConstructionSiteLayout(@NonNull Context context) {
         this(context, null);
@@ -108,6 +112,52 @@ public class ConstructionSiteLayout extends FrameLayout {
         mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_3d));
 
         mSiteBorder = (FrameLayout)findViewById(R.id.constructionsite_border);
+        mSiteBorder.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        touchNum = 1;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        touchNum = 0;
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        touchNum = 1;
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        oldDist = spacing(event);
+                        touchNum += 1;
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+                        if (mode >= 2) {
+                            float newDist = spacing(event);
+                            if (Math.abs(newDist - oldDist) > 30 && Math.abs(newDist - oldDist) < 40) {
+//                                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mSiteBorder.getLayoutParams();
+//                                LogUtils.d(" " + newDist + " " + oldDist + " " + lp.width + " " + lp.height);
+//                                lp.width = (int)(lp.width * scaleRate * (newDist / oldDist));
+//                                lp.height = (int)(lp.height * scaleRate * (newDist / oldDist));
+//                                mSiteBorder.setLayoutParams(lp);
+//                                oldDist = newDist;
+//                                LogUtils.d(" "+ touchNum + " " + oldDist + " " + lp.width + " " + lp.height);
+                                mSiteBorder.setScaleX(scaleRate * newDist / oldDist);
+                                mSiteBorder.setScaleY(scaleRate * newDist / oldDist);
+                                oldDist = newDist;
+
+                            }
+                        }
+                        break;
+                }
+                return true;
+            }
+
+            private float spacing(MotionEvent event) {
+                float x = event.getX(0) - event.getX(1);
+                float y = event.getY(0) - event.getY(1);
+                return (float) Math.sqrt(x * x + y * y);
+            }
+        });
         this.post(new Runnable() {
             @Override
             public void run() {
@@ -188,7 +238,6 @@ public class ConstructionSiteLayout extends FrameLayout {
                     (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY()) * scaleRate  - info.getFrontArmLength()),
                     0, 0);
             mSiteBorder.addView(tcView, tclp);
-            LogUtils.d("333" + (int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate) + " " + (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate));
         }
     }
 
