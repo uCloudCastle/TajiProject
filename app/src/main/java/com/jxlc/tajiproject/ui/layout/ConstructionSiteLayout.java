@@ -10,9 +10,11 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
+import com.jxlc.tajiproject.listener.ScrollTapGesture;
+import com.jxlc.tajiproject.listener.ScaleGesture;
 import com.jxlc.tajiproject.ui.widgets.CircularProgressDrawable;
 import com.jxlc.tajiproject.ui.widgets.TowerCrane2DView;
 import com.randal.aviana.LogUtils;
@@ -29,8 +33,6 @@ import com.unity3d.player.UnityPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.mode;
 
 /**
  * Created by randal on 2017/5/4.
@@ -45,13 +47,14 @@ public class ConstructionSiteLayout extends FrameLayout {
     private CircularProgressDrawable mFloatBtnDrawable;
     private Animator mFloatBtnCurAnim;
 
+    private FrameLayout mContainer;
     private FrameLayout mSiteBorder;
-    private List<TowerCraneInfo> mTCInfoList;
-    private float scaleRate;
+    private GestureDetector mGestureDetector;
+    private ScaleGestureDetector mScaleGestureDetector;
 
+    private List<TowerCraneInfo> mTCInfoList;
+    private float scaleRateSite2Screen;
     private boolean firstLoadUnity = true;
-    int touchNum = 0;
-    float oldDist = 0.0f;
 
     public ConstructionSiteLayout(@NonNull Context context) {
         this(context, null);
@@ -72,7 +75,14 @@ public class ConstructionSiteLayout extends FrameLayout {
 
     private void initVariable() {
         mTCInfoList = new ArrayList<>();
-        mTCInfoList.add(TowerCraneInfo.getDemoInfo());
+        TowerCraneInfo info1 = TowerCraneInfo.getDemoInfo();
+        info1.setAngle(120);
+        mTCInfoList.add(info1);
+        TowerCraneInfo info2 = TowerCraneInfo.getDemoInfo();
+        info2.setCoordinateX(info2.getCoordinateX() + info2.getFrontArmLength() + 10);
+        info2.setCoordinateY(info2.getCoordinateY() + info2.getFrontArmLength() + 10);
+        info2.setAngle(240);
+        mTCInfoList.add(info2);
     }
 
     private void initViews() {
@@ -81,7 +91,7 @@ public class ConstructionSiteLayout extends FrameLayout {
                 .setRingWidth(getResources().getDimensionPixelSize(R.dimen.layout_float_button_ring_width))
                 .setOutlineColor(ContextCompat.getColor(mContext, android.R.color.transparent))
                 .setRingColor(ContextCompat.getColor(mContext, android.R.color.holo_green_light))
-                .setCenterColor(Color.parseColor("#EFFFFAFA"))
+                .setCenterColor(Color.parseColor("#E9DEEDFC"))
                 .create();
         mFloatBtn.setImageDrawable(mFloatBtnDrawable);
         mFloatBtn.setOnTouchListener(new OnTouchListener() {
@@ -110,54 +120,19 @@ public class ConstructionSiteLayout extends FrameLayout {
 
         mFloatBtnTextView = (TextView)findViewById(R.id.constructionsite_floatbtntext);
         mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_3d));
-
+        mContainer = (FrameLayout)findViewById(R.id.constructionsite_container);
         mSiteBorder = (FrameLayout)findViewById(R.id.constructionsite_border);
-        mSiteBorder.setOnTouchListener(new OnTouchListener() {
+        mContainer.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        touchNum = 1;
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        touchNum = 0;
-                        break;
-                    case MotionEvent.ACTION_POINTER_UP:
-                        touchNum = 1;
-                        break;
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                        oldDist = spacing(event);
-                        touchNum += 1;
-                        break;
-
-                    case MotionEvent.ACTION_MOVE:
-                        if (mode >= 2) {
-                            float newDist = spacing(event);
-                            if (Math.abs(newDist - oldDist) > 30 && Math.abs(newDist - oldDist) < 40) {
-//                                FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mSiteBorder.getLayoutParams();
-//                                LogUtils.d(" " + newDist + " " + oldDist + " " + lp.width + " " + lp.height);
-//                                lp.width = (int)(lp.width * scaleRate * (newDist / oldDist));
-//                                lp.height = (int)(lp.height * scaleRate * (newDist / oldDist));
-//                                mSiteBorder.setLayoutParams(lp);
-//                                oldDist = newDist;
-//                                LogUtils.d(" "+ touchNum + " " + oldDist + " " + lp.width + " " + lp.height);
-                                mSiteBorder.setScaleX(scaleRate * newDist / oldDist);
-                                mSiteBorder.setScaleY(scaleRate * newDist / oldDist);
-                                oldDist = newDist;
-
-                            }
-                        }
-                        break;
-                }
+                mGestureDetector.onTouchEvent(event);
+                mScaleGestureDetector.onTouchEvent(event);
                 return true;
             }
-
-            private float spacing(MotionEvent event) {
-                float x = event.getX(0) - event.getX(1);
-                float y = event.getY(0) - event.getY(1);
-                return (float) Math.sqrt(x * x + y * y);
-            }
         });
+
+        mGestureDetector = new GestureDetector(mContext, new ScrollTapGesture(mSiteBorder));
+        mScaleGestureDetector = new ScaleGestureDetector(mContext, new ScaleGesture(mSiteBorder));
         this.post(new Runnable() {
             @Override
             public void run() {
@@ -193,55 +168,70 @@ public class ConstructionSiteLayout extends FrameLayout {
     }
 
     private void switchView() {
-        FrameLayout container = (FrameLayout)findViewById(R.id.constructionsite_container);
-        if (container.getChildCount() == 3) {
-            FrameLayout.LayoutParams lp = new LayoutParams(container.getWidth(), container.getHeight());
-            container.addView(mUnityPlayer, lp);
+        if (mContainer.getChildCount() == 3) {
+            FrameLayout.LayoutParams lp = new LayoutParams(mContainer.getWidth(), mContainer.getHeight());
+            mContainer.addView(mUnityPlayer, lp);
             mFloatBtn.bringToFront();
             mFloatBtnTextView.bringToFront();
             if (!firstLoadUnity) {
                 mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_2d));
             }
         } else {
-            container.removeView(mUnityPlayer);
+            mContainer.removeView(mUnityPlayer);
             mFloatBtnTextView.setText(getResources().getText(R.string.floatbtn_3d));
         }
     }
 
     private void resizeSiteAndTowerCrane() {
-        FrameLayout container = (FrameLayout)findViewById(R.id.constructionsite_container);
-        int cWidth = container.getWidth();
-        int cHeight = container.getHeight();
+        int cWidth = mContainer.getWidth();
+        int cHeight = mContainer.getHeight();
         LogUtils.d("" + cWidth + " " + cHeight);
 
         float wRate = (float)cWidth / (float)EnvironmentInfo.getInstance().getConstructionSiteWidth();
         float hRate = (float)cHeight / (float)EnvironmentInfo.getInstance().getConstructionSiteHeight();
         LogUtils.d("" + wRate + " " + hRate);
-        scaleRate = (wRate < hRate) ? wRate : hRate;
+        scaleRateSite2Screen = (wRate < hRate) ? wRate : hRate;
 
-        FrameLayout.LayoutParams lp = new LayoutParams((int)(EnvironmentInfo.getInstance().getConstructionSiteWidth() * scaleRate),
-                (int)(EnvironmentInfo.getInstance().getConstructionSiteHeight() * scaleRate));
+        FrameLayout.LayoutParams lp = new LayoutParams((int)(EnvironmentInfo.getInstance().getConstructionSiteWidth() * scaleRateSite2Screen),
+                (int)(EnvironmentInfo.getInstance().getConstructionSiteHeight() * scaleRateSite2Screen));
         lp.gravity = Gravity.CENTER;
         mSiteBorder.setLayoutParams(lp);
 
         for (TowerCraneInfo info : mTCInfoList) {
             TowerCrane2DView tcView = new TowerCrane2DView(mContext);
             tcView.setTowerCraneInfo(info);
-            tcView.setScaleX(scaleRate);
-            tcView.setScaleY(scaleRate);
+            tcView.setScaleX(scaleRateSite2Screen);
+            tcView.setScaleY(scaleRateSite2Screen);
 
             FrameLayout.LayoutParams tclp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//            tclp.setMargins((int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate) - (int)(info.getFrontArmLength() * (1-scaleRate)),
-//                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate)  - (int)(info.getFrontArmLength() * (1-scaleRate)),
+//            tclp.setMargins((int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate_Site2Screen) - (int)(info.getFrontArmLength() * (1-scaleRate_Site2Screen)),
+//                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate_Site2Screen)  - (int)(info.getFrontArmLength() * (1-scaleRate_Site2Screen)),
 //                    0, 0);
-            tclp.setMargins((int)(info.getCoordinateX() * scaleRate - info.getFrontArmLength()),
-                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY()) * scaleRate  - info.getFrontArmLength()),
+            tclp.setMargins((int)(info.getCoordinateX() * scaleRateSite2Screen - info.getFrontArmLength()),
+                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY()) * scaleRateSite2Screen - info.getFrontArmLength()),
                     0, 0);
             mSiteBorder.addView(tcView, tclp);
         }
     }
 
+    class ScaleGestureListener implements ScaleGestureDetector.OnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            LogUtils.d("access" + detector.getScaleFactor());
+            return false;
+        }
 
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            LogUtils.d("access" + detector.getScaleFactor());
+            return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            LogUtils.d("access" + detector.getScaleFactor());
+        }
+    }
 }
 
 

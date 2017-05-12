@@ -16,8 +16,8 @@ import com.randal.aviana.DensityUtils;
 
 public class Splitter extends View {
     Paint mPaint;
-    int backgourdColor = Color.parseColor("#EFFFFAFA");
-    int lineColor = Color.parseColor("#888888");
+    int backgourdColor = Color.parseColor("#F5F5F5");
+    int lineColor = Color.parseColor("#686868");
     int defaultWidth = 16;      // dp
     int defaultHeight = 16;     // dp
     int lineLength = 24;        // dp

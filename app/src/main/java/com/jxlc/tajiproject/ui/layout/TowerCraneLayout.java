@@ -56,7 +56,7 @@ public class TowerCraneLayout extends FrameLayout {
                 .setRingWidth(getResources().getDimensionPixelSize(R.dimen.layout_float_button_ring_width))
                 .setOutlineColor(ContextCompat.getColor(context, android.R.color.transparent))
                 .setRingColor(ContextCompat.getColor(context, android.R.color.holo_green_light))
-                .setCenterColor(Color.parseColor("#EFFFFAFA"))
+                .setCenterColor(Color.parseColor("#E9DEEDFC"))
                 .create();
         mFloatBtn.setImageDrawable(mFloatBtnDrawable);
         mFloatBtn.setOnTouchListener(new OnTouchListener() {

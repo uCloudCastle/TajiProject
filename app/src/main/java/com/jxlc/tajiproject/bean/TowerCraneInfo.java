@@ -96,7 +96,9 @@ public class TowerCraneInfo {
 
     public void setCoordinateX(float coordinateX) {
         this.coordinateX = coordinateX;
-        mListener.onStableInfoChanged();
+        if (mListener != null) {
+            mListener.onStableInfoChanged();
+        }
     }
 
     public float getCoordinateY() {
@@ -105,7 +107,9 @@ public class TowerCraneInfo {
 
     public void setCoordinateY(float coordinateY) {
         this.coordinateY = coordinateY;
-        mListener.onStableInfoChanged();
+        if (mListener != null) {
+            mListener.onStableInfoChanged();
+        }
     }
 
     public float getFrontArmLength() {
@@ -114,7 +118,9 @@ public class TowerCraneInfo {
 
     public void setFrontArmLength(float frontArmLength) {
         this.frontArmLength = frontArmLength;
-        mListener.onStableInfoChanged();
+        if (mListener != null) {
+            mListener.onStableInfoChanged();
+        }
     }
 
     public float getRearArmLength() {
@@ -123,7 +129,9 @@ public class TowerCraneInfo {
 
     public void setRearArmLength(float rearArmLength) {
         this.rearArmLength = rearArmLength;
-        mListener.onStableInfoChanged();
+        if (mListener != null) {
+            mListener.onStableInfoChanged();
+        }
     }
 
     public float getTrolleyDistance() {

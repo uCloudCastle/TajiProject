@@ -78,16 +78,16 @@ public class TowerCrane2DView extends View {
 
         mPaint.setStyle(Paint.Style.FILL);                        // 前臂圆
         if (isChecked) {
-            mPaint.setColor(Color.parseColor("#EF00FFFF"));
+            mPaint.setColor(Color.parseColor("#E900FFFF"));
         } else {
-            mPaint.setColor(Color.parseColor("#EF00E100"));
+            mPaint.setColor(Color.parseColor("#E900E100"));
         }
         canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, radius, mPaint);
 
         if (isChecked) {
-            mPaint.setColor(Color.parseColor("#EF00DDDD"));       // 后臂圆
+            mPaint.setColor(Color.parseColor("#E900DDDD"));       // 后臂圆
         } else {
-            mPaint.setColor(Color.parseColor("#EF00B400"));
+            mPaint.setColor(Color.parseColor("#E900B400"));
         }
         canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, mTowerCraneInfo.getRearArmLength(), mPaint);
 
@@ -96,9 +96,10 @@ public class TowerCrane2DView extends View {
                 hhalf - mTowerCraneInfo.getTrolleyDistance() * a, 3, mPaint);
 
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(2);
+        mPaint.setStrokeWidth(1);
         canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, mTowerCraneInfo.getRearArmLength(), mPaint);
-
+        canvas.drawCircle(this.getWidth() / 2, this.getHeight() / 2, mTowerCraneInfo.getFrontArmLength() - 1, mPaint);
+        
         canvas.drawLine(whalf - mTowerCraneInfo.getRearArmLength() * b,         // 吊臂
                 hhalf + mTowerCraneInfo.getRearArmLength() * a,
                 whalf + mTowerCraneInfo.getFrontArmLength() * b,
