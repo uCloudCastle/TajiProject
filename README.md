@@ -16,7 +16,7 @@ Support by And Thanks:<br>
 ![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/monitor.png)
 
     2D View:
-    The Construction Site View can be scaled and dragged as you please
+    The Construction Site View can be scaled and dragged as you please
 ![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d.png)
 
     3DView:
