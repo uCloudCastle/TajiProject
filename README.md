@@ -20,7 +20,7 @@ Support by And Thanks:<br>
 ![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d.png)
 
     3DView:
-    3D simulation monitoring of The real Construction Site
+    3D simulation monitoring of The real Construction Site
 ![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/3d.png)
 
     3D_Animation:
