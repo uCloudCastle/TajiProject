@@ -10,9 +10,15 @@
         android:text="This is Tower Crane Info Panel."/>
 
     <Button
-        android:id="@+id/siteinfopanel_btn"
+        android:id="@+id/siteinfopanel_btn1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="make Tower Crane rotate 10 degrees"/>
+        android:text="旋转3D塔机"/>
+
+    <Button
+        android:id="@+id/siteinfopanel_btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="停止旋转"/>
 
 </LinearLayout>

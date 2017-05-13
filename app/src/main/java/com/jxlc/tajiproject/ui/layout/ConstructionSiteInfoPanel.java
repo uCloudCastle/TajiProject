@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.jxlc.tajiproject.R;
-import com.randal.aviana.LogUtils;
+import com.unity3d.player.UnityPlayer;
 
 /**
  * Created by Randal on 2017-05-13.
@@ -18,7 +18,8 @@ import com.randal.aviana.LogUtils;
 public class ConstructionSiteInfoPanel extends LinearLayout {
     private Context mContext;
     private ConstructionSiteLayout mSiteLayout;
-    private Button mBtn;
+    private Button mBtn1;
+    private Button mBtn2;
 
     public ConstructionSiteInfoPanel(@NonNull Context context) {
         this(context, null);
@@ -29,13 +30,19 @@ public class ConstructionSiteInfoPanel extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.layout_siteinfopanel, this, true);
         mContext = context;
 
-        mBtn = (Button)findViewById(R.id.siteinfopanel_btn);
-        mBtn.setOnClickListener(new OnClickListener() {
+        mBtn1 = (Button)findViewById(R.id.siteinfopanel_btn1);
+        mBtn1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogUtils.d("access");
+                UnityPlayer.UnitySendMessage("taji", "StartAnimator", "");
+            }
+        });
 
-                mSiteLayout.mUnityPlayer.UnitySendMessage("taji", "StartAnimator", "");
+        mBtn2 = (Button)findViewById(R.id.siteinfopanel_btn2);
+        mBtn2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UnityPlayer.UnitySendMessage("taji", "StopAnimator", "");
             }
         });
     }
