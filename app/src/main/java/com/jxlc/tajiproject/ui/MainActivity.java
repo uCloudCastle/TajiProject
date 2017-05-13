@@ -193,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                             + "Any Questions, Welcome to Contact cloudcastle@outlook.com")
                         .show();
                 return true;
+            case R.id.action_close:
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

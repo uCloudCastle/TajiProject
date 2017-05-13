@@ -19,13 +19,14 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
-import com.jxlc.tajiproject.listener.ScrollTapGesture;
 import com.jxlc.tajiproject.listener.ScaleGesture;
+import com.jxlc.tajiproject.listener.ScrollTapGesture;
 import com.jxlc.tajiproject.ui.widgets.CircularProgressDrawable;
 import com.jxlc.tajiproject.ui.widgets.TowerCrane2DView;
 import com.randal.aviana.LogUtils;
@@ -38,7 +39,7 @@ import java.util.List;
  * Created by randal on 2017/5/4.
  */
 
-public class ConstructionSiteLayout extends FrameLayout {
+public class ConstructionSiteLayout extends RelativeLayout {
     private Context mContext;
     protected UnityPlayer mUnityPlayer;
 
@@ -49,6 +50,7 @@ public class ConstructionSiteLayout extends FrameLayout {
 
     private FrameLayout mContainer;
     private FrameLayout mSiteBorder;
+    private ConstructionSiteInfoPanel mInfoPanel;
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
 
@@ -130,6 +132,8 @@ public class ConstructionSiteLayout extends FrameLayout {
                 return true;
             }
         });
+        mInfoPanel = (ConstructionSiteInfoPanel)findViewById(R.id.constructionsite_infopanel);
+        mInfoPanel.setSiteLayout(this);
 
         mGestureDetector = new GestureDetector(mContext, new ScrollTapGesture(mSiteBorder));
         mScaleGestureDetector = new ScaleGestureDetector(mContext, new ScaleGesture(mSiteBorder));
@@ -169,7 +173,7 @@ public class ConstructionSiteLayout extends FrameLayout {
 
     private void switchView() {
         if (mContainer.getChildCount() == 3) {
-            FrameLayout.LayoutParams lp = new LayoutParams(mContainer.getWidth(), mContainer.getHeight());
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(mContainer.getWidth(), mContainer.getHeight());
             mContainer.addView(mUnityPlayer, lp);
             mFloatBtn.bringToFront();
             mFloatBtnTextView.bringToFront();
@@ -192,7 +196,7 @@ public class ConstructionSiteLayout extends FrameLayout {
         LogUtils.d("" + wRate + " " + hRate);
         scaleRateSite2Screen = (wRate < hRate) ? wRate : hRate;
 
-        FrameLayout.LayoutParams lp = new LayoutParams((int)(EnvironmentInfo.getInstance().getConstructionSiteWidth() * scaleRateSite2Screen),
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int)(EnvironmentInfo.getInstance().getConstructionSiteWidth() * scaleRateSite2Screen),
                 (int)(EnvironmentInfo.getInstance().getConstructionSiteHeight() * scaleRateSite2Screen));
         lp.gravity = Gravity.CENTER;
         mSiteBorder.setLayoutParams(lp);
@@ -203,7 +207,7 @@ public class ConstructionSiteLayout extends FrameLayout {
             tcView.setScaleX(scaleRateSite2Screen);
             tcView.setScaleY(scaleRateSite2Screen);
 
-            FrameLayout.LayoutParams tclp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams tclp = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 //            tclp.setMargins((int)((info.getCoordinateX() - info.getFrontArmLength()) * scaleRate_Site2Screen) - (int)(info.getFrontArmLength() * (1-scaleRate_Site2Screen)),
 //                    (int)((EnvironmentInfo.getInstance().getConstructionSiteHeight() - info.getCoordinateY() - info.getFrontArmLength()) * scaleRate_Site2Screen)  - (int)(info.getFrontArmLength() * (1-scaleRate_Site2Screen)),
 //                    0, 0);

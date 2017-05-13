@@ -42,13 +42,13 @@
         android:id="@+id/constructionsite_splitter"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/constructionsite_container"/>
+        android:layout_toEndOf="@+id/constructionsite_container"/>
 
-    <TextView
+    <com.jxlc.tajiproject.ui.layout.ConstructionSiteInfoPanel
+        android:id="@+id/constructionsite_infopanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/constructionsite_splitter"
-        android:layout_alignParentRight="true"
-        android:text="This is Infomation show View."/>
+        android:layout_toEndOf="@+id/constructionsite_splitter"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

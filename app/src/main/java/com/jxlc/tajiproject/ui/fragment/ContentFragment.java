@@ -72,13 +72,7 @@ public class ContentFragment extends Fragment implements ScreenShotable {
         this.containerView = (FrameLayout) view.findViewById(container);
         switch (loadLayout) {
             case TOWERCRANE:
-                if (mUnityPlayer != null) {
-                    TowerCraneLayout tcLayout = new TowerCraneLayout(getActivity(), null, mUnityPlayer);
-                    this.containerView.addView(tcLayout);
-                } else {
-                    TowerCraneLayout tcLayout = new TowerCraneLayout(getActivity());
-                    this.containerView.addView(tcLayout);
-                }
+                this.containerView.addView(new TowerCraneLayout(getActivity()));
                 break;
             case CONSTRUCTIONSITE:
                 if (mUnityPlayer != null) {
