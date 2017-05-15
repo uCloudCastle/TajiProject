@@ -26,7 +26,7 @@ public class Arrow extends View {
     }
 
     public Arrow(Context context, AttributeSet attrs) {
-        this(context, attrs, DEFAULT_COLOR, DEFAULT_LINE_WIDTH, ARROW_DOWN);
+        this(context, attrs, DEFAULT_COLOR, DEFAULT_LINE_WIDTH, ARROW_RIGHT);
     }
 
     public Arrow(Context context, AttributeSet attrs, int color, float width, int direction) {
@@ -39,6 +39,10 @@ public class Arrow extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(width);
         mPaint.setAntiAlias(true);
+    }
+
+    public void setDirection(int direction) {
+        mDirection = direction;
     }
 
     @Override
