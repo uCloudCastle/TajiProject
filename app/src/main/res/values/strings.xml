@@ -16,4 +16,6 @@
     <string name="floatbtn_2d">2 D 视角</string>
     <string name="floatbtn_3d">3 D 视角</string>
     <string name="floatbtn_loading">加载中</string>
+
+    <string name="infopanel_title_runningstatus">运行状态</string>
 </resources>

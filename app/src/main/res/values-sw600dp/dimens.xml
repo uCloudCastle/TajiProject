@@ -1,6 +1,6 @@
 <resources>
 
-    <dimen name="construction_framelayout_min_width">720dp</dimen>
+    <dimen name="construction_framelayout_min_width">650dp</dimen>
 
 
 </resources>

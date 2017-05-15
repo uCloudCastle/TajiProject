@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.jxlc.tajiproject.R;
+import com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle;
 import com.randal.aviana.ui.ExpandableLayout;
 
 /**
@@ -17,6 +18,7 @@ import com.randal.aviana.ui.ExpandableLayout;
 
 public class ConstructionSiteInfoPanel extends LinearLayout implements View.OnClickListener {
     private Context mContext;
+    private InfoPanelItemTitle mRunningStatusTitle;
     private ExpandableLayout expandableLayout0;
     private ExpandableLayout expandableLayout1;
 
@@ -46,16 +48,20 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements View.OnCl
             }
         });
 
-        findViewById(R.id.expand_button).setOnClickListener(this);
+        mRunningStatusTitle = (InfoPanelItemTitle)findViewById(R.id.running_status_title);
+        mRunningStatusTitle.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         if (expandableLayout0.isExpanded()) {
+            mRunningStatusTitle.setDirection(InfoPanelItemTitle.ARROW_UP);
             expandableLayout0.collapse();
         } else if (expandableLayout1.isExpanded()) {
+            mRunningStatusTitle.setDirection(InfoPanelItemTitle.ARROW_RIGHT);
             expandableLayout1.collapse();
         } else {
+            mRunningStatusTitle.setDirection(InfoPanelItemTitle.ARROW_LEFT);
             expandableLayout0.expand();
             expandableLayout1.expand();
         }

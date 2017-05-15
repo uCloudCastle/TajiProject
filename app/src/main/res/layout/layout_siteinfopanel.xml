@@ -2,15 +2,18 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffff"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
-        android:id="@+id/expand_button"
+        android:id="@+id/running_status_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"/>
+        android:layout_height="@dimen/construction_infopanel_title_height"
+        android:clickable="true"
+        android:background="@drawable/infopanel_title_ripple"
+        app:title="@string/infopanel_title_runningstatus"/>
 
     <com.randal.aviana.ui.ExpandableLayout
         android:id="@+id/expandable_layout_0"
@@ -19,15 +22,13 @@
         app:el_duration="1000"
         app:el_expanded="true">
 
-        <TextView
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#00b300"
             android:clipToPadding="false"
-            android:elevation="4dp"
             android:gravity="center"
             android:text="Fixed height"
-            android:textColor="#fff" />
+            android:textColor="#000" />
 
     </com.randal.aviana.ui.ExpandableLayout>
 

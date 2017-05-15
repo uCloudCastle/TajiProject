@@ -15,4 +15,5 @@
     <dimen name="layout_float_button_text_margin_right">24dp</dimen>
 
     <dimen name="construction_framelayout_min_width">400dp</dimen>
+    <dimen name="construction_infopanel_title_height">48dp</dimen>
 </resources>

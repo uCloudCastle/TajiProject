@@ -17,4 +17,6 @@
     <string name="floatbtn_2d">2 D View</string>
     <string name="floatbtn_3d">3 D View</string>
     <string name="floatbtn_loading">Loading</string>
+
+    <string name="infopanel_title_runningstatus">Running Status</string>
 </resources>
