@@ -8,6 +8,7 @@ Support by And Thanks:<br>
 * [Yalantis/Side-Menu.Android](https://github.com/Yalantis/Side-Menu.Android)
 * [pedant/sweet-alert-dialog](https://github.com/pedant/sweet-alert-dialog)
 * [Sefford/CircularProgressDrawable](https://github.com/Sefford/CircularProgressDrawable)
+* [cachapa/ExpandableLayout](https://github.com/cachapa/ExpandableLayout)
 
 <br>
 
