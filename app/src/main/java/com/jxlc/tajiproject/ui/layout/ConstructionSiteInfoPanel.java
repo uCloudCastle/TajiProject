@@ -3,23 +3,22 @@ package com.jxlc.tajiproject.ui.layout;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.jxlc.tajiproject.R;
-import com.unity3d.player.UnityPlayer;
+import com.randal.aviana.ui.ExpandableLayout;
 
 /**
  * Created by Randal on 2017-05-13.
  */
 
-public class ConstructionSiteInfoPanel extends LinearLayout {
+public class ConstructionSiteInfoPanel extends LinearLayout implements View.OnClickListener {
     private Context mContext;
-    private ConstructionSiteLayout mSiteLayout;
-    private Button mBtn1;
-    private Button mBtn2;
+    private ExpandableLayout expandableLayout0;
+    private ExpandableLayout expandableLayout1;
 
     public ConstructionSiteInfoPanel(@NonNull Context context) {
         this(context, null);
@@ -30,24 +29,35 @@ public class ConstructionSiteInfoPanel extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.layout_siteinfopanel, this, true);
         mContext = context;
 
-        mBtn1 = (Button)findViewById(R.id.siteinfopanel_btn1);
-        mBtn1.setOnClickListener(new OnClickListener() {
+        expandableLayout0 = (ExpandableLayout) findViewById(R.id.expandable_layout_0);
+        expandableLayout1 = (ExpandableLayout) findViewById(R.id.expandable_layout_1);
+
+        expandableLayout0.setOnExpansionUpdateListener(new ExpandableLayout.OnExpansionUpdateListener() {
             @Override
-            public void onClick(View view) {
-                UnityPlayer.UnitySendMessage("taji", "StartAnimator", "");
+            public void onExpansionUpdate(float expansionFraction, int state) {
+                Log.d("ExpandableLayout0", "State: " + state);
             }
         });
 
-        mBtn2 = (Button)findViewById(R.id.siteinfopanel_btn2);
-        mBtn2.setOnClickListener(new OnClickListener() {
+        expandableLayout1.setOnExpansionUpdateListener(new ExpandableLayout.OnExpansionUpdateListener() {
             @Override
-            public void onClick(View view) {
-                UnityPlayer.UnitySendMessage("taji", "StopAnimator", "");
+            public void onExpansionUpdate(float expansionFraction, int state) {
+                Log.d("ExpandableLayout1", "State: " + state);
             }
         });
+
+        findViewById(R.id.expand_button).setOnClickListener(this);
     }
 
-    public void setSiteLayout(ConstructionSiteLayout layout) {
-        mSiteLayout = layout;
+    @Override
+    public void onClick(View view) {
+        if (expandableLayout0.isExpanded()) {
+            expandableLayout0.collapse();
+        } else if (expandableLayout1.isExpanded()) {
+            expandableLayout1.collapse();
+        } else {
+            expandableLayout0.expand();
+            expandableLayout1.expand();
+        }
     }
 }

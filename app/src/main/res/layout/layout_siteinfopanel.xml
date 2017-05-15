@@ -1,24 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/expand_button"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:text="This is Tower Crane Info Panel."/>
+        android:background="?android:windowBackground"
+        android:elevation="6dp"
+        android:foreground="?selectableItemBackground"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="toggle" />
 
-    <Button
-        android:id="@+id/siteinfopanel_btn1"
-        android:layout_width="wrap_content"
+    <com.randal.aviana.ui.ExpandableLayout
+        android:id="@+id/expandable_layout_0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="旋转3D塔机"/>
+        app:el_duration="1000"
+        app:el_expanded="true">
 
-    <Button
-        android:id="@+id/siteinfopanel_btn2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="停止旋转"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#00b300"
+            android:clipToPadding="false"
+            android:elevation="4dp"
+            android:gravity="center"
+            android:text="Fixed height"
+            android:textColor="#fff" />
+
+    </com.randal.aviana.ui.ExpandableLayout>
+
+    <com.randal.aviana.ui.ExpandableLayout
+        android:id="@+id/expandable_layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#f00"
+        app:el_duration="1000"
+        app:el_expanded="true"
+        app:el_parallax="0.5">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00f"
+            android:gravity="center"
+            android:text="Fill height"
+            android:textColor="#fff" />
+
+    </com.randal.aviana.ui.ExpandableLayout>
 
 </LinearLayout>

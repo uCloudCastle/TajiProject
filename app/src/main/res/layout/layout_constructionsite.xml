@@ -47,7 +47,7 @@
     <com.jxlc.tajiproject.ui.layout.ConstructionSiteInfoPanel
         android:id="@+id/constructionsite_infopanel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_toEndOf="@+id/constructionsite_splitter"
         android:layout_alignParentEnd="true" />
 

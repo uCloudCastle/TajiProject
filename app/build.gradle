@@ -26,7 +26,8 @@ android {
     sourceSets {
         main {
             java {
-                srcDirs = ['src/main/java', 'src/main/utils']
+                srcDirs = ['src/main/java', 'src/main/utils/java']
+                res.srcDirs = ['src/main/res', 'src/main/utils/res']
             }
         }
     }

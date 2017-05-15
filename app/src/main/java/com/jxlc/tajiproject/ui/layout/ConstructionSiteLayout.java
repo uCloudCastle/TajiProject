@@ -133,7 +133,7 @@ public class ConstructionSiteLayout extends RelativeLayout {
             }
         });
         mInfoPanel = (ConstructionSiteInfoPanel)findViewById(R.id.constructionsite_infopanel);
-        mInfoPanel.setSiteLayout(this);
+        //mInfoPanel.setSiteLayout(this);
 
         mGestureDetector = new GestureDetector(mContext, new ScrollTapGesture(mSiteBorder));
         mScaleGestureDetector = new ScaleGestureDetector(mContext, new ScaleGesture(mSiteBorder));
