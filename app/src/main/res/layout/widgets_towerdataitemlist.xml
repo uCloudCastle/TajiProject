@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="塔机# :"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="机型 :"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="坐标X :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="坐标Y :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="前臂长 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="后臂长 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="高度 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="小车行距 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="吊绳长度 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="旋臂角度 :"
+        app:dataitemunit="°"/>
+
+</LinearLayout>

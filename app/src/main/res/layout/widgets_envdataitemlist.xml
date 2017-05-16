@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="X轴距 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="Y轴距 :"
+        app:dataitemunit="M"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="风速 :"
+        app:dataitemunit="M/s"/>
+
+    <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:dataitemtitle="温度 :"
+        app:dataitemunit="°C"/>
+
+</LinearLayout>

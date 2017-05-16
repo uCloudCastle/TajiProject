@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/construction_infopanel_title_height"
             android:background="@drawable/infopanel_title_ripple"
-            app:title="@string/infopanel_title_runningstatus"/>
+            app:paneltitle="@string/infopanel_title_runningstatus"/>
 
         <com.randal.aviana.ui.ExpandableLayout
             android:id="@+id/expandable_running_status"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/construction_infopanel_title_height"
             android:background="@drawable/infopanel_title_ripple"
-            app:title="@string/infopanel_title_towerdata"/>
+            app:paneltitle="@string/infopanel_title_towerdata"/>
 
         <com.randal.aviana.ui.ExpandableLayout
             android:id="@+id/expandable_tower_data"
@@ -57,13 +57,13 @@
             app:el_duration="1000"
             app:el_expanded="true">
 
-            <TextView
+            <com.jxlc.tajiproject.ui.widgets.TowerDataItemList
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00f"
-                android:gravity="center"
-                android:text="Fill height"
-                android:textColor="#fff"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/tower_data_item_list_margin_left"
+                android:layout_marginEnd="@dimen/tower_data_item_list_margin_right"
+                android:layout_marginTop="@dimen/tower_data_item_list_margin_top"
+                android:layout_marginBottom="@dimen/tower_data_item_list_margin_bottom"/>
         </com.randal.aviana.ui.ExpandableLayout>
 
         <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/construction_infopanel_title_height"
             android:background="@drawable/infopanel_title_ripple"
-            app:title="@string/infopanel_title_envdata"/>
+            app:paneltitle="@string/infopanel_title_envdata"/>
 
         <com.randal.aviana.ui.ExpandableLayout
             android:id="@+id/expandable_env_data"
@@ -80,13 +80,13 @@
             app:el_duration="1000"
             app:el_expanded="true">
 
-            <TextView
+            <com.jxlc.tajiproject.ui.widgets.EnvDataItemList
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00f"
-                android:gravity="center"
-                android:text="Fill height"
-                android:textColor="#fff"/>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/tower_data_item_list_margin_left"
+                android:layout_marginEnd="@dimen/tower_data_item_list_margin_right"
+                android:layout_marginTop="@dimen/tower_data_item_list_margin_top"
+                android:layout_marginBottom="@dimen/tower_data_item_list_margin_bottom"/>
         </com.randal.aviana.ui.ExpandableLayout>
 
         <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/construction_infopanel_title_height"
             android:background="@drawable/infopanel_title_ripple"
-            app:title="@string/infopanel_title_developer"/>
+            app:paneltitle="@string/infopanel_title_developer"/>
 
         <com.randal.aviana.ui.ExpandableLayout
             android:id="@+id/expandable_developer"

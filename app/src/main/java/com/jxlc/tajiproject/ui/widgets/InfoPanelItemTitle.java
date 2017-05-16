@@ -49,7 +49,7 @@ public class InfoPanelItemTitle extends RelativeLayout {
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.InfoPanelItemTitle);
-            title = a.getString(R.styleable.InfoPanelItemTitle_title);
+            title = a.getString(R.styleable.InfoPanelItemTitle_paneltitle);
             a.recycle();
         }
 

@@ -2,7 +2,12 @@
 <resources>
 
     <declare-styleable name="InfoPanelItemTitle">
-        <attr name="title" format="string" />
+        <attr name="paneltitle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ListDataItem">
+        <attr name="dataitemtitle" format="string" />
+        <attr name="dataitemunit" format="string" />
     </declare-styleable>
 
 </resources>
