@@ -36,6 +36,7 @@
                     android:id="@+id/infopanel_runningstatus_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorGrayDark"
                     android:textSize="@dimen/infopanel_runningstatus_text_size"
                     android:text="塔机#1进入塔机#2交叉工作区域"/>
 
@@ -78,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:el_duration="1000"
-            app:el_expanded="true">
+            app:el_expanded="false">
 
             <com.jxlc.tajiproject.ui.widgets.EnvDataItemList
                 android:layout_width="match_parent"
@@ -101,37 +102,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:el_duration="1000"
-            app:el_expanded="true">
+            app:el_expanded="false">
 
-            <TextView
+            <com.jxlc.tajiproject.ui.widgets.DeveloperOptions
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00f"
-                android:gravity="center"
-                android:text="Fill height"
-                android:textColor="#fff"/>
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/developer_options_margin"/>
+
         </com.randal.aviana.ui.ExpandableLayout>
 
     </LinearLayout>
-
-    <!--<com.randal.aviana.ui.ExpandableLayout-->
-        <!--android:id="@+id/expandable_tower_data"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:background="#f00"-->
-        <!--app:el_duration="1000"-->
-        <!--app:el_expanded="true"-->
-        <!--app:el_parallax="0.5">-->
-
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="#00f"-->
-            <!--android:gravity="center"-->
-            <!--android:text="Fill height"-->
-            <!--android:textColor="#fff" />-->
-
-    <!--</com.randal.aviana.ui.ExpandableLayout>-->
-
 </ScrollView>

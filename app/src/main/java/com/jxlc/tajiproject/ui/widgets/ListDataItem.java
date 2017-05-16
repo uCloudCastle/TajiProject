@@ -31,7 +31,7 @@ public class ListDataItem extends RelativeLayout {
     private static final int TEXT_COLOR = Color.parseColor("#404040");
     private static final int EDIT_MARGIN_LEFT = 16;         // dp
     private static final int EDIT_MARGIN_RIGHT = 2;         // dp
-    private static final int UNIT_WIDTH = 18;         // dp
+    private static final int UNIT_WIDTH = 24;         // dp
 
     private String title;
     private String unit;

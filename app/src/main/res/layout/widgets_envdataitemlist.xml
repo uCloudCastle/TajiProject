@@ -8,25 +8,25 @@
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
-        app:dataitemtitle="X轴距 :"
+        app:dataitemtitle="@string/env_data_item_x"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
-        app:dataitemtitle="Y轴距 :"
+        app:dataitemtitle="@string/env_data_item_y"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
-        app:dataitemtitle="风速 :"
+        app:dataitemtitle="@string/env_data_item_windspeed"
         app:dataitemunit="M/s"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
-        app:dataitemtitle="温度 :"
+        app:dataitemtitle="@string/env_data_item_temperature"
         app:dataitemunit="°C"/>
 
 </LinearLayout>

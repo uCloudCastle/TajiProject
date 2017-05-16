@@ -26,4 +26,10 @@
     <dimen name="tower_data_item_list_margin_top">8dp</dimen>
     <dimen name="tower_data_item_list_margin_right">16dp</dimen>
     <dimen name="tower_data_item_list_margin_bottom">8dp</dimen>
+
+    <dimen name="developer_options_margin">16dp</dimen>
+    <dimen name="developer_options_item_height">48dp</dimen>
+    <dimen name="developer_options_text_size">14sp</dimen>
+    <dimen name="developer_options_text_margin_left">10dp</dimen>
+    <dimen name="developer_options_line_margin">10dp</dimen>
 </resources>

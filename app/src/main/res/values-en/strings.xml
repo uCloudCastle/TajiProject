@@ -22,4 +22,29 @@
     <string name="infopanel_title_towerdata">Tower Crane Info</string>
     <string name="infopanel_title_envdata">Environment Info</string>
     <string name="infopanel_title_developer">Developer Options</string>
+
+    <string name="tower_data_item_id">ID:</string>
+    <string name="tower_data_item_model">Model:</string>
+    <string name="tower_data_item_x">X:</string>
+    <string name="tower_data_item_y">Y:</string>
+    <string name="tower_data_item_frontarm">FrontArm Length:</string>
+    <string name="tower_data_item_reararm">RearArm Length:</string>
+    <string name="tower_data_item_height">Height:</string>
+    <string name="tower_data_item_trolleydistance">Trolley Distance:</string>
+    <string name="tower_data_item_ropelength">Rope Length:</string>
+    <string name="tower_data_item_angle">Angle:</string>
+    <string name="tower_data_item_limiter_liftweight">LiftWeight Limiter</string>
+    <string name="tower_data_item_limiter_liftheight">LiftHeight Limiter</string>
+    <string name="tower_data_item_limiter_torque">Torque Limiter</string>
+    <string name="tower_data_item_limiter_overstroke">OverStroke Limiter</string>
+    <string name="tower_data_item_limiter_slewing">Slewing Limiter</string>
+
+    <string name="env_data_item_x">AxisX Length:</string>
+    <string name="env_data_item_y">AxisY Length:</string>
+    <string name="env_data_item_windspeed">Wind Speed :</string>
+    <string name="env_data_item_temperature">Temperature:</string>
+
+    <string name="developer_options_add_towercrane">Add Tower Crane</string>
+    <string name="developer_options_remove_towercrane">Remove Current Tower Crane</string>
+    <string name="developer_options_run_text">Simulation Start</string>
 </resources>

@@ -21,4 +21,29 @@
     <string name="infopanel_title_towerdata">塔机信息</string>
     <string name="infopanel_title_envdata">环境信息</string>
     <string name="infopanel_title_developer">开发者选项</string>
+
+    <string name="tower_data_item_id">塔机# :</string>
+    <string name="tower_data_item_model">机型 :</string>
+    <string name="tower_data_item_x">坐标X :</string>
+    <string name="tower_data_item_y">坐标Y :</string>
+    <string name="tower_data_item_frontarm">前臂长 :</string>
+    <string name="tower_data_item_reararm">后臂长 :</string>
+    <string name="tower_data_item_height">高度 :</string>
+    <string name="tower_data_item_trolleydistance">小车行距 :</string>
+    <string name="tower_data_item_ropelength">吊绳长度 :</string>
+    <string name="tower_data_item_angle">旋臂角度 :</string>
+    <string name="tower_data_item_limiter_liftweight">起升重量限制器</string>
+    <string name="tower_data_item_limiter_liftheight">起升高度限制器</string>
+    <string name="tower_data_item_limiter_torque">力矩限制器</string>
+    <string name="tower_data_item_limiter_overstroke">行程限制器</string>
+    <string name="tower_data_item_limiter_slewing">回转限制器</string>
+
+    <string name="env_data_item_x">X轴距 :</string>
+    <string name="env_data_item_y">Y轴距 :</string>
+    <string name="env_data_item_windspeed">风速 :</string>
+    <string name="env_data_item_temperature">温度 :</string>
+
+    <string name="developer_options_add_towercrane">添加测试塔机</string>
+    <string name="developer_options_remove_towercrane">删除当前塔机</string>
+    <string name="developer_options_run_text">开启模拟运行</string>
 </resources>
