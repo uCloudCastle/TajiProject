@@ -19,4 +19,7 @@
     <string name="floatbtn_loading">Loading</string>
 
     <string name="infopanel_title_runningstatus">Running Status</string>
+    <string name="infopanel_title_towerdata">Tower Crane Info</string>
+    <string name="infopanel_title_envdata">Environment Info</string>
+    <string name="infopanel_title_developer">Developer Options</string>
 </resources>

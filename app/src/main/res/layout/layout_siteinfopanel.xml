@@ -1,55 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#ffffff"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:scrollbars="none">
 
-    <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
-        android:id="@+id/running_status_title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/construction_infopanel_title_height"
-        android:clickable="true"
-        android:background="@drawable/infopanel_title_ripple"
-        app:title="@string/infopanel_title_runningstatus"/>
-
-    <com.randal.aviana.ui.ExpandableLayout
-        android:id="@+id/expandable_layout_0"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:el_duration="1000"
-        app:el_expanded="true">
+        android:orientation="vertical">
 
-        <EditText
+        <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
+            android:id="@+id/running_status_title"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:clipToPadding="false"
-            android:gravity="center"
-            android:text="Fixed height"
-            android:textColor="#000" />
+            android:layout_height="@dimen/construction_infopanel_title_height"
+            android:background="@drawable/infopanel_title_ripple"
+            app:title="@string/infopanel_title_runningstatus"/>
 
-    </com.randal.aviana.ui.ExpandableLayout>
-
-    <com.randal.aviana.ui.ExpandableLayout
-        android:id="@+id/expandable_layout_1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#f00"
-        app:el_duration="1000"
-        app:el_expanded="true"
-        app:el_parallax="0.5">
-
-        <TextView
+        <com.randal.aviana.ui.ExpandableLayout
+            android:id="@+id/expandable_running_status"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#00f"
-            android:gravity="center"
-            android:text="Fill height"
-            android:textColor="#fff" />
+            android:layout_height="wrap_content"
+            app:el_duration="1000"
+            app:el_expanded="true">
 
-    </com.randal.aviana.ui.ExpandableLayout>
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/infopanel_runningstatus_scrolltext_height"
+                android:padding="@dimen/infopanel_runningstatus_scrolltext_padding">
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/infopanel_runningstatus_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/infopanel_runningstatus_text_size"
+                    android:text="塔机#1进入塔机#2交叉工作区域"/>
+
+            </android.support.v4.widget.NestedScrollView>
+
+        </com.randal.aviana.ui.ExpandableLayout>
+
+        <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
+            android:id="@+id/tower_data_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/construction_infopanel_title_height"
+            android:background="@drawable/infopanel_title_ripple"
+            app:title="@string/infopanel_title_towerdata"/>
+
+        <com.randal.aviana.ui.ExpandableLayout
+            android:id="@+id/expandable_tower_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:el_duration="1000"
+            app:el_expanded="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Fill height"
+                android:textColor="#fff"/>
+        </com.randal.aviana.ui.ExpandableLayout>
+
+        <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
+            android:id="@+id/env_data_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/construction_infopanel_title_height"
+            android:background="@drawable/infopanel_title_ripple"
+            app:title="@string/infopanel_title_envdata"/>
+
+        <com.randal.aviana.ui.ExpandableLayout
+            android:id="@+id/expandable_env_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:el_duration="1000"
+            app:el_expanded="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Fill height"
+                android:textColor="#fff"/>
+        </com.randal.aviana.ui.ExpandableLayout>
+
+        <com.jxlc.tajiproject.ui.widgets.InfoPanelItemTitle
+            android:id="@+id/developer_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/construction_infopanel_title_height"
+            android:background="@drawable/infopanel_title_ripple"
+            app:title="@string/infopanel_title_developer"/>
+
+        <com.randal.aviana.ui.ExpandableLayout
+            android:id="@+id/expandable_developer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:el_duration="1000"
+            app:el_expanded="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00f"
+                android:gravity="center"
+                android:text="Fill height"
+                android:textColor="#fff"/>
+        </com.randal.aviana.ui.ExpandableLayout>
+
+    </LinearLayout>
+
+    <!--<com.randal.aviana.ui.ExpandableLayout-->
+        <!--android:id="@+id/expandable_tower_data"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="#f00"-->
+        <!--app:el_duration="1000"-->
+        <!--app:el_expanded="true"-->
+        <!--app:el_parallax="0.5">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#00f"-->
+            <!--android:gravity="center"-->
+            <!--android:text="Fill height"-->
+            <!--android:textColor="#fff" />-->
+
+    <!--</com.randal.aviana.ui.ExpandableLayout>-->
+
+</ScrollView>

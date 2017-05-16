@@ -29,7 +29,7 @@ public class InfoPanelItemTitle extends RelativeLayout {
     public static final int ARROW_DOWN = 0x13;
 
     private static final int ARROW_HEIGHT = 18;      // dp
-    private static final int ARROW_MARGIN = 16;         // dp
+    private static final int ARROW_MARGIN = 12;         // dp
     private static final float ARROW_PAINT_WIDTH = 1.5f;      // dp
     private static final int ARROW_COLOR = Color.parseColor("#121A2A");
     private static final int TEXT_SIZE = 18;         // sp

@@ -18,4 +18,7 @@
     <string name="floatbtn_loading">加载中</string>
 
     <string name="infopanel_title_runningstatus">运行状态</string>
+    <string name="infopanel_title_towerdata">塔机信息</string>
+    <string name="infopanel_title_envdata">环境信息</string>
+    <string name="infopanel_title_developer">开发者选项</string>
 </resources>
