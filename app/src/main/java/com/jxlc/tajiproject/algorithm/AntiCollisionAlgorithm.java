@@ -16,15 +16,18 @@
 
 package com.jxlc.tajiproject.algorithm;
 
+import android.os.Handler;
+
+import com.jxlc.tajiproject.bean.InfoListener;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import com.randal.aviana.LogUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_1REACH2;
 import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_2REACH1;
@@ -35,12 +38,12 @@ import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_REACH
  * Created by Randal on 2017-05-08.
  */
 
-public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
+public class AntiCollisionAlgorithm implements InfoListener {
     private List<TowerCraneInfo> mTCInfoList;
     private List<AntiCollisionListener> mListeners;
     private List<CheckChangedListener> mCheckListeners;
     private List<IntersectKey> mPairList;
-    private HashMap<IntersectKey, IntersectValue> mPairMap;
+    private ConcurrentHashMap<IntersectKey, IntersectValue> mPairMap;
 
     private float safeDistance_arm2arm = 3;           // M
     private float safeDistance_arm2rope = 5;          // M
@@ -54,8 +57,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
         mListeners = new ArrayList<>();
         mCheckListeners = new ArrayList<>();
         mPairList = new ArrayList<>();
-        mPairMap = new HashMap<>();
-        mTimer = new Timer();
+        mPairMap = new ConcurrentHashMap<>();
     }
     private static class SingletonHolder {
         static final AntiCollisionAlgorithm INSTANCE = new AntiCollisionAlgorithm();
@@ -86,24 +88,43 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
 
     public void setTowerCraneList(List<TowerCraneInfo> list) {
         mTCInfoList = list;
+        for (TowerCraneInfo info : mTCInfoList) {
+            info.addListener(this);
+        }
         updatePairMap();
     }
 
     public void addTowerCrane(TowerCraneInfo info) {
+        info.addListener(this);
         mTCInfoList.add(info);
-        updatePairMap();
-    }
-
-    public void removeTowerCrane(TowerCraneInfo info) {
-        mTCInfoList.remove(info);
         updatePairMap();
     }
 
     public boolean removeTowerCraneById(int id) {
         for (TowerCraneInfo info : mTCInfoList) {
             if (info.getIdentifier() == id) {
+                info.removeListener(this);
+                stop();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        AntiCollisionAlgorithm.this.run();
+                    }
+                }, 2000);
                 mTCInfoList.remove(info);
                 updatePairMap();
+
+                if (id == curCheckId) {
+                    if (mTCInfoList.size() > 0) {
+                        curCheckId = mTCInfoList.get(0).getIdentifier();
+                    } else {
+                        curCheckId = -1;
+                    }
+                    for (CheckChangedListener listener : mCheckListeners) {
+                        listener.onCheckChanged(id, curCheckId);
+                    }
+                }
+
                 return true;
             }
         }
@@ -130,6 +151,20 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
         for (CheckChangedListener listener : mCheckListeners) {
             listener.onCheckChanged(old, curCheckId);
         }
+    }
+
+    public TowerCraneInfo getTowerCraneInfoById(int id) {
+        for (TowerCraneInfo info : mTCInfoList) {
+            if(info.getIdentifier() == id) {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    // return -1 if no Tower Crane checked
+    public int getCheckTowerId() {
+        return curCheckId;
     }
 
     public void run() {
@@ -183,6 +218,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
                 }
             }
         };
+        mTimer = new Timer();
         mTimer.scheduleAtFixedRate(task, 0, interval);
     }
 
@@ -228,7 +264,9 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
     }
 
     public void stop() {
-        mTimer.cancel();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 
     // call when Tower Crane List changed
@@ -242,6 +280,8 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
     }
 
     private int updateIntersectPairs() {
+        mPairList.clear();
+        LogUtils.d("mTCInfoList.size() = " + mTCInfoList.size() + " " + mPairList.size());
         for (int i = 0; i < mTCInfoList.size(); ++i) {
             for (int j = i + 1; j < mTCInfoList.size(); ++j) {
                 float dx = mTCInfoList.get(i).getCoordinateX() - mTCInfoList.get(j).getCoordinateX();
@@ -261,6 +301,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
                 }
             }
         }
+        LogUtils.d("mPairList.size() = " + mPairList.size());
         return mPairList.size();
     }
 
@@ -304,6 +345,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
             for (AntiCollisionListener listener : mListeners) {
                 listener.onHasIntersection(key.idOne, key.idTwo, value);
             }
+            LogUtils.d(" mPairMap = " + key.toString() + " " + value.toString());
         }
     }
 
@@ -564,27 +606,20 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
         }
     }
 
-    private TowerCraneInfo getTowerCraneInfoById(int id) {
-        for (TowerCraneInfo info : mTCInfoList) {
-            if(info.getIdentifier() == id) {
-                return info;
+    @Override
+    public void onInfoChanged(int id) {
+        if (id == curCheckId) {
+            for (CheckChangedListener listener : mCheckListeners) {
+                listener.onCheckedDataChanged();
             }
         }
-        return null;
     }
 
     @Override
-    public void onInfoChanged() {
-
-    }
+    public void onPaintInfoChanged(int id) {}
 
     @Override
-    public void onPaintInfoChanged() {
-
-    }
-
-    @Override
-    public void onStableInfoChanged() {
+    public void onStableInfoChanged(int id) {
         updatePairMap();
     }
 }

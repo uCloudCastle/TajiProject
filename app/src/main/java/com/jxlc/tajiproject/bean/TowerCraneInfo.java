@@ -89,7 +89,7 @@ public class TowerCraneInfo {
     public void setIdentifier(int identifier) {
         this.identifier = identifier;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -100,7 +100,7 @@ public class TowerCraneInfo {
     public void setModelName(String modelName) {
         this.modelName = modelName;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -111,8 +111,8 @@ public class TowerCraneInfo {
     public void setCoordinateX(float coordinateX) {
         this.coordinateX = coordinateX;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
-            l.onStableInfoChanged();
+            l.onInfoChanged(identifier);
+            l.onStableInfoChanged(identifier);
         }
     }
 
@@ -123,8 +123,8 @@ public class TowerCraneInfo {
     public void setCoordinateY(float coordinateY) {
         this.coordinateY = coordinateY;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
-            l.onStableInfoChanged();
+            l.onInfoChanged(identifier);
+            l.onStableInfoChanged(identifier);
         }
     }
 
@@ -135,9 +135,9 @@ public class TowerCraneInfo {
     public void setFrontArmLength(float frontArmLength) {
         this.frontArmLength = frontArmLength;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
-            l.onPaintInfoChanged();
-            l.onStableInfoChanged();
+            l.onInfoChanged(identifier);
+            l.onPaintInfoChanged(identifier);
+            l.onStableInfoChanged(identifier);
         }
     }
 
@@ -148,9 +148,9 @@ public class TowerCraneInfo {
     public void setRearArmLength(float rearArmLength) {
         this.rearArmLength = rearArmLength;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
-            l.onPaintInfoChanged();
-            l.onStableInfoChanged();
+            l.onInfoChanged(identifier);
+            l.onPaintInfoChanged(identifier);
+            l.onStableInfoChanged(identifier);
         }
     }
 
@@ -161,8 +161,8 @@ public class TowerCraneInfo {
     public void setTrolleyDistance(float trolleyDistance) {
         this.trolleyDistance = trolleyDistance;
         for (InfoListener l : mListeners) {
-            l.onPaintInfoChanged();
-            l.onInfoChanged();
+            l.onPaintInfoChanged(identifier);
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -173,7 +173,7 @@ public class TowerCraneInfo {
     public void setArmToGroundHeight(float armToGroundHeight) {
         this.armToGroundHeight = armToGroundHeight;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -184,7 +184,7 @@ public class TowerCraneInfo {
     public void setRopeLength(float ropeLength) {
         this.ropeLength = ropeLength;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -195,8 +195,8 @@ public class TowerCraneInfo {
     public void setAngle(float angle) {
         this.angle = angle;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
-            l.onPaintInfoChanged();
+            l.onInfoChanged(identifier);
+            l.onPaintInfoChanged(identifier);
         }
     }
 
@@ -207,7 +207,7 @@ public class TowerCraneInfo {
     public void setLiftWeightLimiterWorkStatus(boolean isWorkfine) {
         this.liftWeightLimiter = isWorkfine;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -218,7 +218,7 @@ public class TowerCraneInfo {
     public void setLiftHeightLimiterWorkStatus(boolean isWorkfine) {
         this.liftHeightLimiter = isWorkfine;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -229,7 +229,7 @@ public class TowerCraneInfo {
     public void setTorqueLimiterWorkStatus(boolean isWorkfine) {
         this.torqueLimiter = isWorkfine;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -240,7 +240,7 @@ public class TowerCraneInfo {
     public void setOverstrokeLimiterWorkStatus(boolean isWorkfine) {
         this.overstrokeLimiter = isWorkfine;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -251,7 +251,7 @@ public class TowerCraneInfo {
     public void setSlewingLimiterWorkStatus(boolean isWorkfine) {
         this.slewingLimiter = isWorkfine;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged();
+            l.onInfoChanged(identifier);
         }
     }
 
@@ -274,11 +274,5 @@ public class TowerCraneInfo {
                 ", overstrokeLimiter=" + overstrokeLimiter +
                 ", slewingLimiter=" + slewingLimiter +
                 '}';
-    }
-
-    public interface InfoListener {
-        void onStableInfoChanged();
-        void onPaintInfoChanged();
-        void onInfoChanged();
     }
 }

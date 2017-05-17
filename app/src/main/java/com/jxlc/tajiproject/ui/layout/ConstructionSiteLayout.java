@@ -48,7 +48,6 @@ public class ConstructionSiteLayout extends RelativeLayout {
 
     private FrameLayout mContainer;
     private FrameLayout mSiteBorder;
-    private ConstructionSiteInfoPanel mInfoPanel;
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
 
@@ -116,8 +115,6 @@ public class ConstructionSiteLayout extends RelativeLayout {
                 return true;
             }
         });
-        mInfoPanel = (ConstructionSiteInfoPanel)findViewById(R.id.constructionsite_infopanel);
-        //mInfoPanel.setSiteLayout(this);
 
         mGestureDetector = new GestureDetector(mContext, new ScrollTapGesture(mSiteBorder));
         mScaleGestureDetector = new ScaleGestureDetector(mContext, new ScaleGesture(mSiteBorder));

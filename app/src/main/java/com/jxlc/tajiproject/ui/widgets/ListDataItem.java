@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -84,6 +85,7 @@ public class ListDataItem extends RelativeLayout {
         mEditText.setTextColor(TEXT_COLOR);
         mEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE);
         mEditText.setGravity(Gravity.CENTER);
+        mEditText.setInputType(InputType.TYPE_CLASS_PHONE);
         mEditText.setPadding(0, 0, 0, 0);
         int editId = View.generateViewId();
         mEditText.setId(editId);
@@ -96,5 +98,9 @@ public class ListDataItem extends RelativeLayout {
 
     public void setContent(String str) {
         mEditText.setText(str);
+    }
+
+    public String getContent() {
+        return mEditText.getText().toString();
     }
 }

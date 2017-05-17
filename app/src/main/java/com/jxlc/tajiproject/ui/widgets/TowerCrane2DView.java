@@ -11,13 +11,14 @@ import android.view.View;
 
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.algorithm.CheckChangedListener;
+import com.jxlc.tajiproject.bean.InfoListener;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
 
 /**
  * Created by Randal on 2017-05-06.
  */
 
-public class TowerCrane2DView extends View implements TowerCraneInfo.InfoListener, View.OnClickListener {
+public class TowerCrane2DView extends View implements InfoListener, View.OnClickListener {
     private Context mContext;
     private TowerCraneInfo mTowerCraneInfo = TowerCraneInfo.getDemoInfo();
     private Paint mPaint;
@@ -68,14 +69,25 @@ public class TowerCrane2DView extends View implements TowerCraneInfo.InfoListene
                     Message msg = new Message();
                     msg.what = CHECKLOSE;
                     mHandler.sendMessage(msg);
+                } else if (newId == mTowerCraneInfo.getIdentifier()) {
+                    isChecked = true;
+                    Message msg = new Message();
+                    msg.what = INVALIDATE;
+                    mHandler.sendMessage(msg);
                 }
             }
+
+            @Override
+            public void onCheckedDataChanged() {}
         });
     }
 
     public void setTowerCraneInfo(TowerCraneInfo info) {
         mTowerCraneInfo = info;
         mTowerCraneInfo.addListener(this);
+        if (mTowerCraneInfo.getIdentifier() == AntiCollisionAlgorithm.getInstance().getCheckTowerId()) {
+            isChecked = true;
+        }
     }
 
     public TowerCraneInfo getTowerCraneInfo() {
@@ -151,19 +163,17 @@ public class TowerCrane2DView extends View implements TowerCraneInfo.InfoListene
     }
 
     @Override
-    public void onInfoChanged() {
-    }
+    public void onInfoChanged(int id) {}
 
     @Override
-    public void onPaintInfoChanged() {
+    public void onPaintInfoChanged(int id) {
         Message msg = new Message();
         msg.what = INVALIDATE;
         mHandler.sendMessage(msg);
     }
 
     @Override
-    public void onStableInfoChanged() {
-    }
+    public void onStableInfoChanged(int id) {}
 
     @Override
     public void onClick(View view) {

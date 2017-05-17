@@ -6,84 +6,99 @@
               android:layout_height="match_parent">
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_id"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_id"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_model"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_model"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_x"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_x"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_y"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_y"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_frontarm"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_frontarm"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_reararm"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_reararm"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_height"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_height"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_trolleydistance"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_trolleydistance"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_ropelength"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_ropelength"
         app:dataitemunit="M"/>
 
     <com.jxlc.tajiproject.ui.widgets.ListDataItem
+        android:id="@+id/tower_data_item_angle"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/tower_data_item_height"
         app:dataitemtitle="@string/tower_data_item_angle"
         app:dataitemunit="°"/>
 
     <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:id="@+id/tower_data_item_limiter_liftweight"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tower_data_item_height"
         app:indicatortitle="@string/tower_data_item_limiter_liftweight"/>
 
     <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:id="@+id/tower_data_item_limiter_liftheight"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tower_data_item_height"
         app:indicatortitle="@string/tower_data_item_limiter_liftheight"/>
 
     <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:id="@+id/tower_data_item_limiter_torque"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tower_data_item_height"
         app:indicatortitle="@string/tower_data_item_limiter_torque"/>
 
     <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:id="@+id/tower_data_item_limiter_overstorke"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tower_data_item_height"
         app:indicatortitle="@string/tower_data_item_limiter_overstroke"/>
 
     <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:id="@+id/tower_data_item_limiter_slewing"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tower_data_item_height"
         app:indicatortitle="@string/tower_data_item_limiter_slewing"/>

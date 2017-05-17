@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/developer_add_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/developer_options_item_height"
         android:textSize="@dimen/developer_options_text_size"
@@ -11,6 +12,7 @@
         android:text="@string/developer_options_add_towercrane"/>
 
     <Button
+        android:id="@+id/developer_del_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/developer_options_item_height"
         android:textSize="@dimen/developer_options_text_size"
@@ -36,40 +38,6 @@
 
         <com.kyleduo.switchbutton.SwitchButton
             android:id="@+id/developer_run_switch_button"
-            style="@style/SwitchButtonMD"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorGrayDarkTrans"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/developer_options_line_margin"
-            android:layout_marginRight="@dimen/developer_options_line_margin"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/developer_editable_relative_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/developer_options_item_height"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/developer_options_text_margin_left"
-            android:textColor="@color/colorGrayDark"
-            android:textSize="@dimen/developer_options_text_size"
-            android:text="@string/developer_options_editable_text"/>
-
-        <com.kyleduo.switchbutton.SwitchButton
-            android:id="@+id/developer_editable_switch_button"
             style="@style/SwitchButtonMD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
