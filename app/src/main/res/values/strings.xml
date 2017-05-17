@@ -32,11 +32,11 @@
     <string name="tower_data_item_trolleydistance">小车行距 :</string>
     <string name="tower_data_item_ropelength">吊绳长度 :</string>
     <string name="tower_data_item_angle">旋臂角度 :</string>
-    <string name="tower_data_item_limiter_liftweight">起升重量限制器</string>
-    <string name="tower_data_item_limiter_liftheight">起升高度限制器</string>
-    <string name="tower_data_item_limiter_torque">力矩限制器</string>
-    <string name="tower_data_item_limiter_overstroke">行程限制器</string>
-    <string name="tower_data_item_limiter_slewing">回转限制器</string>
+    <string name="tower_data_item_limiter_liftweight">起升重量限制器 :</string>
+    <string name="tower_data_item_limiter_liftheight">起升高度限制器 :</string>
+    <string name="tower_data_item_limiter_torque">力矩限制器 :</string>
+    <string name="tower_data_item_limiter_overstroke">行程限制器 :</string>
+    <string name="tower_data_item_limiter_slewing">回转限制器 :</string>
 
     <string name="env_data_item_x">X轴距 :</string>
     <string name="env_data_item_y">Y轴距 :</string>
@@ -46,4 +46,5 @@
     <string name="developer_options_add_towercrane">添加测试塔机</string>
     <string name="developer_options_remove_towercrane">删除当前塔机</string>
     <string name="developer_options_run_text">开启模拟运行</string>
+    <string name="developer_options_editable_text">数据面板可编辑</string>
 </resources>

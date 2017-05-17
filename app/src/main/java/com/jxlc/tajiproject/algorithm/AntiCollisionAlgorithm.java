@@ -35,18 +35,24 @@ import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_REACH
  * Created by Randal on 2017-05-08.
  */
 
-public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener {
+public class AntiCollisionAlgorithm implements TowerCraneInfo.InfoListener {
     private List<TowerCraneInfo> mTCInfoList;
     private List<AntiCollisionListener> mListeners;
+    private List<CheckChangedListener> mCheckListeners;
     private List<IntersectKey> mPairList;
     private HashMap<IntersectKey, IntersectValue> mPairMap;
 
+    private float safeDistance_arm2arm = 3;           // M
+    private float safeDistance_arm2rope = 5;          // M
+
     private Timer mTimer;
+    private int curCheckId;
     private int interval = 1000;      // ms
 
     private AntiCollisionAlgorithm(){
         mTCInfoList = new ArrayList<>();
         mListeners = new ArrayList<>();
+        mCheckListeners = new ArrayList<>();
         mPairList = new ArrayList<>();
         mPairMap = new HashMap<>();
         mTimer = new Timer();
@@ -64,6 +70,14 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
 
     public void removeListener(AntiCollisionListener l) {
         mListeners.remove(l);
+    }
+
+    public void addCheckListener(CheckChangedListener l) {
+        mCheckListeners.add(l);
+    }
+
+    public void removeCheckListener(CheckChangedListener l) {
+        mCheckListeners.remove(l);
     }
 
     public List<TowerCraneInfo> getTCInfoList() {
@@ -96,10 +110,33 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
         return false;
     }
 
+    public void setSafeDistance_arm2arm(float value) {
+        safeDistance_arm2arm = value;
+    }
+
+    public void setSafeDistance_arm2rope(float value) {
+        safeDistance_arm2rope = value;
+    }
+
+    // set current tower crane
+    public void setCheckTowerId(int id) {
+        TowerCraneInfo info = getTowerCraneInfoById(id);
+        if (info == null) {
+            return;
+        }
+
+        int old = curCheckId;
+        curCheckId = id;
+        for (CheckChangedListener listener : mCheckListeners) {
+            listener.onCheckChanged(old, curCheckId);
+        }
+    }
+
     public void run() {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                simulation();
                 if (mPairMap.isEmpty()) {
                     return;
                 }
@@ -109,7 +146,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
                     IntersectKey key = entry.getKey();
                     IntersectValue value = entry.getValue();
                     int type = value.intersectType;
-                    LogUtils.d("key = " + key + " value = " + value);
+                    //LogUtils.d("key = " + key.toString() + " value = " + value.toString());
 
                     switch (type) {
                         case INTERSECT_TYPE_ONLYFRONT: {
@@ -138,15 +175,56 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
                         default:
                             break;
                     }
-                }
 
-                if (!intersect) {
-                    return;
+                    // both arm in Intersect, need check collision
+                    if (intersect) {
+                        checkCollision(entry);
+                    }
                 }
-                checkCollision();
             }
         };
         mTimer.scheduleAtFixedRate(task, 0, interval);
+    }
+
+    // TODO: it's for demo
+    private void simulation() {
+        for (TowerCraneInfo info : mTCInfoList) {
+            if (info.getAngle() >= 360) {
+                info.setAngle(0);
+            }
+            info.setAngle(info.getAngle() + 3);
+
+            if (info.getTrolleyDistance() >= 40) {
+                info.setTrolleyDistance(20);
+            }
+            info.setTrolleyDistance(info.getTrolleyDistance() + 2);
+        }
+    }
+
+    // TODO: done it
+    // check higher tower rope safe range with lower tower distance
+    private void checkCollision(Map.Entry<IntersectKey, IntersectValue> entry) {
+        IntersectKey key = entry.getKey();
+        IntersectValue value = entry.getValue();
+
+        TowerCraneInfo higher = getTowerCraneInfoById(key.idOne);
+        TowerCraneInfo lower = getTowerCraneInfoById(key.idTwo);
+        if (higher == null || lower == null) {
+            return;
+        }
+        if (higher.getArmToGroundHeight() < lower.getArmToGroundHeight()) {
+            TowerCraneInfo temp = higher;
+            higher = lower;
+            lower = temp;
+        }
+//
+//        if (higher.getArmToGroundHeight() - lower.getArmToGroundHeight() <= safeDistance_arm2arm) {
+//            // 1. 如果吊臂高度差小于等于安全距离,则直接检测吊臂前端
+//            float x = higher.getCoordinateX() + higher.getFrontArmLength();
+//        } else {
+//            // 2. 否则检测低位塔机到吊绳的安全距离
+//            float j;
+//        }
     }
 
     public void stop() {
@@ -326,10 +404,13 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
         saver.max = (angle_AB + angle_3) * 180 / (float) Math.PI;
     }
 
+    /*
+     * 前臂在前臂限制区状态回调
+     */
     private boolean checkRuntimeAngleMF2F(IntersectKey key, IntersectValue value) {
         // master
         float angle = getTowerCraneInfoById(key.idOne).getAngle();
-        if (value.towerOneFFAngleMin <= angle && angle < value.towerOneFFAngleMax) {
+        if (checkIFAngleInRange(angle, value.towerOneFFAngleMin, value.towerOneFFAngleMax)) {
             if (!value.towerOneFFMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onFrontEnterIntersection(key.idOne, key.idTwo, true);
@@ -347,12 +428,12 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
 
         // flower
         angle = getTowerCraneInfoById(key.idTwo).getAngle();
-        if (value.towerTwoFFAngleMin <= angle && angle < value.towerTwoFFAngleMax) {
+        if (checkIFAngleInRange(angle, value.towerTwoFFAngleMin, value.towerTwoFFAngleMax)) {
             if (!value.towerTwoFFMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onFrontEnterIntersection(key.idTwo, key.idOne, true);
                 }
-                value.towerOneFFMark = true;
+                value.towerTwoFFMark = true;
             }
         } else {
             if (value.towerTwoFFMark) {
@@ -362,14 +443,17 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
                 value.towerTwoFFMark = false;
             }
         }
-
         return (value.towerOneFFMark && value.towerTwoFFMark);
     }
 
+    /*
+     * 后臂在前臂限制区状态回调
+     */
     private boolean checkRuntimeAngleMB2F(IntersectKey key, IntersectValue value) {
         // master
         float angle = getTowerCraneInfoById(key.idOne).getAngle();
-        if (value.towerOneBFAngleMin <= angle && angle < value.towerOneBFAngleMax) {
+        angle = convert2RearAngle(angle);
+        if (checkIFAngleInRange(angle, value.towerOneBFAngleMin, value.towerOneBFAngleMax)) {
             if (!value.towerOneBFMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onRearEnterIntersection(key.idOne, key.idTwo);
@@ -387,7 +471,7 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
 
         // flower
         angle = getTowerCraneInfoById(key.idTwo).getAngle();
-        if (value.towerTwoFBAngleMin <= angle && angle < value.towerTwoFBAngleMax) {
+        if (checkIFAngleInRange(angle, value.towerTwoFBAngleMin, value.towerTwoFBAngleMax)) {
             if (!value.towerTwoFBMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onFrontEnterIntersection(key.idTwo, key.idOne, false);
@@ -405,10 +489,13 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
         return (value.towerOneBFMark && value.towerTwoFBMark);
     }
 
+    /*
+     * 前臂在后臂限制区状态回调
+     */
     private boolean checkRuntimeAngleMF2B(IntersectKey key, IntersectValue value) {
         // master
         float angle = getTowerCraneInfoById(key.idOne).getAngle();
-        if (value.towerOneFBAngleMin <= angle && angle < value.towerOneFBAngleMax) {
+        if (checkIFAngleInRange(angle, value.towerOneFBAngleMin, value.towerOneFBAngleMax)) {
             if (!value.towerOneFBMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onFrontEnterIntersection(key.idOne, key.idTwo, false);
@@ -426,12 +513,13 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
 
         // flower
         angle = getTowerCraneInfoById(key.idTwo).getAngle();
-        if (value.towerTwoBFAngleMin <= angle && angle < value.towerTwoBFAngleMax) {
+        angle = convert2RearAngle(angle);
+        if (checkIFAngleInRange(angle, value.towerTwoBFAngleMin, value.towerTwoBFAngleMax)) {
             if (!value.towerTwoBFMark) {
                 for (AntiCollisionListener listener : mListeners) {
                     listener.onRearEnterIntersection(key.idTwo, key.idOne);
                 }
-                value.towerOneBFMark = true;
+                value.towerTwoBFMark = true;
             }
         } else {
             if (value.towerTwoBFMark) {
@@ -441,12 +529,39 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
                 value.towerTwoBFMark = false;
             }
         }
-
         return (value.towerOneFBMark && value.towerTwoBFMark);
     }
 
-    private void checkCollision() {
+    /*
+     * 角度检查函数
+     * obtainAngle()的返回值可能为(-175.1, -120.9)
+     * 或者是 (-52.3, 21.2)
+     * 可以保证 min < max
+     *
+     * angle为塔机实时角度值,范围为[0,360)
+     */
+    private boolean checkIFAngleInRange(float angle, float min, float max) {
 
+        if (min > 0 && max > 0) {
+            return (angle >= min) && (angle <= max);
+        } else if (min < 0 && max < 0) {
+            angle -= 360;
+            return (angle >= min) && (angle <= max);
+        } else if (min <0 && max >= 0) {
+            return ((angle >= min + 360) && (angle <= 360)) ||
+                    ((angle >= 0) && (angle <= max));
+        } else {
+            LogUtils.e("error angle type!");
+        }
+        return false;
+    }
+
+    private float convert2RearAngle(float angle) {
+        if (angle < 180) {   // [0,180)
+            return angle + 180;
+        } else {             // [180,360)
+            return angle - 180;
+        }
     }
 
     private TowerCraneInfo getTowerCraneInfoById(int id) {
@@ -456,6 +571,16 @@ public class AntiCollisionAlgorithm implements TowerCraneInfo.StableInfoListener
             }
         }
         return null;
+    }
+
+    @Override
+    public void onInfoChanged() {
+
+    }
+
+    @Override
+    public void onPaintInfoChanged() {
+
     }
 
     @Override

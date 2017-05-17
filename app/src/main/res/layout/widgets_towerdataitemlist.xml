@@ -63,4 +63,29 @@
         app:dataitemtitle="@string/tower_data_item_angle"
         app:dataitemunit="°"/>
 
+    <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:indicatortitle="@string/tower_data_item_limiter_liftweight"/>
+
+    <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:indicatortitle="@string/tower_data_item_limiter_liftheight"/>
+
+    <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:indicatortitle="@string/tower_data_item_limiter_torque"/>
+
+    <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:indicatortitle="@string/tower_data_item_limiter_overstroke"/>
+
+    <com.jxlc.tajiproject.ui.widgets.StatusIndicatorItem
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tower_data_item_height"
+        app:indicatortitle="@string/tower_data_item_limiter_slewing"/>
+
 </LinearLayout>

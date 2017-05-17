@@ -10,4 +10,8 @@
         <attr name="dataitemunit" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="StatusIndicatorItem">
+        <attr name="indicatortitle" format="string" />
+    </declare-styleable>
+
 </resources>

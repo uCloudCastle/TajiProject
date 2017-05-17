@@ -1,5 +1,8 @@
 package com.jxlc.tajiproject.bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 塔吊必备限制器:
  * (1)起重量限制器：也称超载限位器、是一种能使起重机不致超负荷运行的保险装置，当吊重超过额定起重量时，
@@ -21,7 +24,7 @@ package com.jxlc.tajiproject.bean;
  */
 
 public class TowerCraneInfo {
-    private StableInfoListener mListener;
+    private List<InfoListener> mListeners;
     private int identifier;          // id
     private String modelName;        // 型号名称
 
@@ -64,14 +67,19 @@ public class TowerCraneInfo {
         this.torqueLimiter = isTorqueLimiterWorkFine;
         this.overstrokeLimiter = isOverstrokeLimiterWorkFine;
         this.slewingLimiter = isSlewingLimiterWorkFine;
+        mListeners = new ArrayList<>();
     }
 
     public static TowerCraneInfo getDemoInfo() {
-        return new TowerCraneInfo(0, "ZSL750", 200, 200, 60, 5, 100, 40, 20, 60, true, true, true, true, true);
+        return new TowerCraneInfo(1, "ZSL750", 200, 200, 60, 5, 100, 40, 20, 60, true, true, true, true, true);
     }
 
-    public void setListener(StableInfoListener l) {
-        mListener = l;
+    public void addListener(InfoListener l) {
+        mListeners.add(l);
+    }
+
+    public void removeListener(InfoListener l) {
+        mListeners.remove(l);
     }
 
     public int getIdentifier() {
@@ -80,6 +88,9 @@ public class TowerCraneInfo {
 
     public void setIdentifier(int identifier) {
         this.identifier = identifier;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public String getModelName() {
@@ -88,6 +99,9 @@ public class TowerCraneInfo {
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public float getCoordinateX() {
@@ -96,8 +110,9 @@ public class TowerCraneInfo {
 
     public void setCoordinateX(float coordinateX) {
         this.coordinateX = coordinateX;
-        if (mListener != null) {
-            mListener.onStableInfoChanged();
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+            l.onStableInfoChanged();
         }
     }
 
@@ -107,8 +122,9 @@ public class TowerCraneInfo {
 
     public void setCoordinateY(float coordinateY) {
         this.coordinateY = coordinateY;
-        if (mListener != null) {
-            mListener.onStableInfoChanged();
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+            l.onStableInfoChanged();
         }
     }
 
@@ -118,8 +134,10 @@ public class TowerCraneInfo {
 
     public void setFrontArmLength(float frontArmLength) {
         this.frontArmLength = frontArmLength;
-        if (mListener != null) {
-            mListener.onStableInfoChanged();
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+            l.onPaintInfoChanged();
+            l.onStableInfoChanged();
         }
     }
 
@@ -129,8 +147,10 @@ public class TowerCraneInfo {
 
     public void setRearArmLength(float rearArmLength) {
         this.rearArmLength = rearArmLength;
-        if (mListener != null) {
-            mListener.onStableInfoChanged();
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+            l.onPaintInfoChanged();
+            l.onStableInfoChanged();
         }
     }
 
@@ -140,6 +160,10 @@ public class TowerCraneInfo {
 
     public void setTrolleyDistance(float trolleyDistance) {
         this.trolleyDistance = trolleyDistance;
+        for (InfoListener l : mListeners) {
+            l.onPaintInfoChanged();
+            l.onInfoChanged();
+        }
     }
 
     public float getArmToGroundHeight() {
@@ -148,6 +172,9 @@ public class TowerCraneInfo {
 
     public void setArmToGroundHeight(float armToGroundHeight) {
         this.armToGroundHeight = armToGroundHeight;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public float getRopeLength() {
@@ -156,6 +183,9 @@ public class TowerCraneInfo {
 
     public void setRopeLength(float ropeLength) {
         this.ropeLength = ropeLength;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public float getAngle() {
@@ -164,6 +194,10 @@ public class TowerCraneInfo {
 
     public void setAngle(float angle) {
         this.angle = angle;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+            l.onPaintInfoChanged();
+        }
     }
 
     public boolean isLiftWeightLimiterWorkFine() {
@@ -172,6 +206,9 @@ public class TowerCraneInfo {
 
     public void setLiftWeightLimiterWorkStatus(boolean isWorkfine) {
         this.liftWeightLimiter = isWorkfine;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public boolean isLiftHeightLimiterWorkFine() {
@@ -180,6 +217,9 @@ public class TowerCraneInfo {
 
     public void setLiftHeightLimiterWorkStatus(boolean isWorkfine) {
         this.liftHeightLimiter = isWorkfine;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public boolean isTorqueLimiterWorkFine() {
@@ -188,6 +228,9 @@ public class TowerCraneInfo {
 
     public void setTorqueLimiterWorkStatus(boolean isWorkfine) {
         this.torqueLimiter = isWorkfine;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public boolean isOverstrokeLimiterWorkFine() {
@@ -196,6 +239,9 @@ public class TowerCraneInfo {
 
     public void setOverstrokeLimiterWorkStatus(boolean isWorkfine) {
         this.overstrokeLimiter = isWorkfine;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     public boolean isSlewingLimiterWorkFine() {
@@ -204,6 +250,9 @@ public class TowerCraneInfo {
 
     public void setSlewingLimiterWorkStatus(boolean isWorkfine) {
         this.slewingLimiter = isWorkfine;
+        for (InfoListener l : mListeners) {
+            l.onInfoChanged();
+        }
     }
 
     @Override
@@ -227,7 +276,9 @@ public class TowerCraneInfo {
                 '}';
     }
 
-    public interface StableInfoListener {
+    public interface InfoListener {
         void onStableInfoChanged();
+        void onPaintInfoChanged();
+        void onInfoChanged();
     }
 }

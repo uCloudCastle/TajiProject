@@ -24,10 +24,36 @@ public class IntersectValue {
     float towerTwoBFAngleMin;
     float towerTwoBFAngleMax;
 
+    // set Mark If this tower crane in Intersect Area now
     boolean towerOneFFMark = false;
     boolean towerOneFBMark = false;
     boolean towerOneBFMark = false;
     boolean towerTwoFFMark = false;
     boolean towerTwoFBMark = false;
     boolean towerTwoBFMark = false;
+
+    @Override
+    public String toString() {
+        return "IntersectValue{" +
+                "intersectType=" + intersectType +
+                ", towerOneFFAngleMin=" + towerOneFFAngleMin +
+                ", towerOneFFAngleMax=" + towerOneFFAngleMax +
+                ", towerOneFBAngleMin=" + towerOneFBAngleMin +
+                ", towerOneFBAngleMax=" + towerOneFBAngleMax +
+                ", towerOneBFAngleMin=" + towerOneBFAngleMin +
+                ", towerOneBFAngleMax=" + towerOneBFAngleMax +
+                ", towerTwoFFAngleMin=" + towerTwoFFAngleMin +
+                ", towerTwoFFAngleMax=" + towerTwoFFAngleMax +
+                ", towerTwoFBAngleMin=" + towerTwoFBAngleMin +
+                ", towerTwoFBAngleMax=" + towerTwoFBAngleMax +
+                ", towerTwoBFAngleMin=" + towerTwoBFAngleMin +
+                ", towerTwoBFAngleMax=" + towerTwoBFAngleMax +
+                ", towerOneFFMark=" + towerOneFFMark +
+                ", towerOneFBMark=" + towerOneFBMark +
+                ", towerOneBFMark=" + towerOneBFMark +
+                ", towerTwoFFMark=" + towerTwoFFMark +
+                ", towerTwoFBMark=" + towerTwoFBMark +
+                ", towerTwoBFMark=" + towerTwoBFMark +
+                '}';
+    }
 }

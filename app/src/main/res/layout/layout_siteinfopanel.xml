@@ -28,17 +28,21 @@
             app:el_expanded="true">
 
             <android.support.v4.widget.NestedScrollView
+                android:id="@+id/infopanel_runningstatus_scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/infopanel_runningstatus_scrolltext_height"
-                android:padding="@dimen/infopanel_runningstatus_scrolltext_padding">
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:layout_marginTop="@dimen/infopanel_runningstatus_scrolltext_margin_top"
+                android:layout_marginStart="@dimen/infopanel_runningstatus_scrolltext_padding"
+                android:layout_marginEnd="@dimen/infopanel_runningstatus_scrolltext_padding">
 
                 <TextView
                     android:id="@+id/infopanel_runningstatus_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorGrayDark"
-                    android:textSize="@dimen/infopanel_runningstatus_text_size"
-                    android:text="塔机#1进入塔机#2交叉工作区域"/>
+                    android:textSize="@dimen/infopanel_runningstatus_text_size"/>
 
             </android.support.v4.widget.NestedScrollView>
 

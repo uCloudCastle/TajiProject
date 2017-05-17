@@ -42,10 +42,10 @@ public class Round extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float width = canvas.getWidth();
-        float height = canvas.getHeight();
-        float radius = width < height ? width : height;
-        canvas.drawCircle(width / 2, height / 2, radius, mPaint);
+        float x = canvas.getWidth() / 2;
+        float y = canvas.getHeight() / 2;
+        float radius = x < y ? x : y;
+        canvas.drawCircle(x, y, radius, mPaint);
     }
 
     @Override

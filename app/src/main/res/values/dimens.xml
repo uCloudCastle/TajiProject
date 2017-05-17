@@ -19,6 +19,7 @@
 
     <dimen name="infopanel_runningstatus_scrolltext_height">180dp</dimen>
     <dimen name="infopanel_runningstatus_scrolltext_padding">16dp</dimen>
+    <dimen name="infopanel_runningstatus_scrolltext_margin_top">8dp</dimen>
     <dimen name="infopanel_runningstatus_text_size">13sp</dimen>
 
     <dimen name="tower_data_item_height">32dp</dimen>

@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jxlc.tajiproject.R;
+import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import com.jxlc.tajiproject.listener.ScaleGesture;
@@ -31,9 +32,6 @@ import com.jxlc.tajiproject.ui.widgets.CircularProgressDrawable;
 import com.jxlc.tajiproject.ui.widgets.TowerCrane2DView;
 import com.randal.aviana.LogUtils;
 import com.unity3d.player.UnityPlayer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by randal on 2017/5/4.
@@ -54,7 +52,6 @@ public class ConstructionSiteLayout extends RelativeLayout {
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
 
-    private List<TowerCraneInfo> mTCInfoList;
     private float scaleRateSite2Screen;
     private boolean firstLoadUnity = true;
 
@@ -71,20 +68,7 @@ public class ConstructionSiteLayout extends RelativeLayout {
     public ConstructionSiteLayout(Context context, AttributeSet attrs, UnityPlayer player) {
         this(context, attrs);
         mUnityPlayer = player;
-        initVariable();
         initViews();
-    }
-
-    private void initVariable() {
-        mTCInfoList = new ArrayList<>();
-        TowerCraneInfo info1 = TowerCraneInfo.getDemoInfo();
-        info1.setAngle(120);
-        mTCInfoList.add(info1);
-        TowerCraneInfo info2 = TowerCraneInfo.getDemoInfo();
-        info2.setCoordinateX(info2.getCoordinateX() + info2.getFrontArmLength() + 10);
-        info2.setCoordinateY(info2.getCoordinateY() + info2.getFrontArmLength() + 10);
-        info2.setAngle(240);
-        mTCInfoList.add(info2);
     }
 
     private void initViews() {
@@ -201,7 +185,7 @@ public class ConstructionSiteLayout extends RelativeLayout {
         lp.gravity = Gravity.CENTER;
         mSiteBorder.setLayoutParams(lp);
 
-        for (TowerCraneInfo info : mTCInfoList) {
+        for (TowerCraneInfo info : AntiCollisionAlgorithm.getInstance().getTCInfoList()) {
             TowerCrane2DView tcView = new TowerCrane2DView(mContext);
             tcView.setTowerCraneInfo(info);
             tcView.setScaleX(scaleRateSite2Screen);

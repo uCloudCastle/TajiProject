@@ -33,11 +33,11 @@
     <string name="tower_data_item_trolleydistance">Trolley Distance:</string>
     <string name="tower_data_item_ropelength">Rope Length:</string>
     <string name="tower_data_item_angle">Angle:</string>
-    <string name="tower_data_item_limiter_liftweight">LiftWeight Limiter</string>
-    <string name="tower_data_item_limiter_liftheight">LiftHeight Limiter</string>
-    <string name="tower_data_item_limiter_torque">Torque Limiter</string>
-    <string name="tower_data_item_limiter_overstroke">OverStroke Limiter</string>
-    <string name="tower_data_item_limiter_slewing">Slewing Limiter</string>
+    <string name="tower_data_item_limiter_liftweight">LiftWeight Limiter:</string>
+    <string name="tower_data_item_limiter_liftheight">LiftHeight Limiter:</string>
+    <string name="tower_data_item_limiter_torque">Torque Limiter:</string>
+    <string name="tower_data_item_limiter_overstroke">OverStroke Limiter:</string>
+    <string name="tower_data_item_limiter_slewing">Slewing Limiter:</string>
 
     <string name="env_data_item_x">AxisX Length:</string>
     <string name="env_data_item_y">AxisY Length:</string>
@@ -47,4 +47,5 @@
     <string name="developer_options_add_towercrane">Add Tower Crane</string>
     <string name="developer_options_remove_towercrane">Remove Current Tower Crane</string>
     <string name="developer_options_run_text">Simulation Start</string>
+    <string name="developer_options_editable_text">Panel Data Editable</string>
 </resources>
