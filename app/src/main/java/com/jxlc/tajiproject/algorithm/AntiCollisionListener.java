@@ -12,4 +12,5 @@ public interface AntiCollisionListener {
     void onFrontLeaveIntersection(int majorId, int affectedId, boolean isOutCircle);
     void onRearLeaveIntersection(int majorId, int affectedId);
 
+    void onCollisionComing(int id1, int id2);
 }

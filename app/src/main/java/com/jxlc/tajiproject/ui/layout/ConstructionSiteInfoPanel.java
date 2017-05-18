@@ -1,11 +1,14 @@
 package com.jxlc.tajiproject.ui.layout;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +53,7 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements AntiColli
     public static final int REAR_ENTER = 2;
     public static final int FRONT_LEAVE = 3;
     public static final int REAR_LEAVE = 4;
+    public static final int COLLISIONCOMING = 5;
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -91,6 +95,18 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements AntiColli
                     int majorId = bundle.getInt(BUNDLE_ID_1);
                     int affectedId = bundle.getInt(BUNDLE_ID_2);
                     refreshStatus("塔机#" + majorId + "后臂离开塔机#" + affectedId + "前臂工作区域");
+                    break;
+                }
+                case COLLISIONCOMING: {
+                    Bundle bundle = msg.getData();
+                    int id1 = bundle.getInt(BUNDLE_ID_1);
+                    int id2 = bundle.getInt(BUNDLE_ID_2);
+                    String text = "<font color='#FF8800'>塔机#" + id1 + "与塔机#" + id2 + "相距过近,请注意避让!</font>";
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        refreshStatus(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
+                    } else {
+                        refreshStatus(Html.fromHtml(text));
+                    }
                     break;
                 }
                 default:
@@ -185,6 +201,17 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements AntiColli
         });
     }
 
+    public void refreshStatus(Spanned msg) {
+        mRunningStatusTextView.append("\n");
+        mRunningStatusTextView.append(msg);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mStatusScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+    }
+
     @Override
     public void onHasIntersection(int id1, int id2, IntersectValue value) {
         Message msg = new Message();
@@ -238,6 +265,17 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements AntiColli
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_ID_1, majorId);
         bundle.putInt(BUNDLE_ID_2, affectedId);
+        msg.setData(bundle);
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onCollisionComing(int id1, int id2) {
+        Message msg = new Message();
+        msg.what = COLLISIONCOMING;
+        Bundle bundle = new Bundle();
+        bundle.putInt(BUNDLE_ID_1, id1);
+        bundle.putInt(BUNDLE_ID_2, id2);
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }

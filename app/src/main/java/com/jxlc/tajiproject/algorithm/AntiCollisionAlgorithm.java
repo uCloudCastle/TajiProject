@@ -46,8 +46,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
     private List<IntersectKey> mPairList;
     private ConcurrentHashMap<IntersectKey, IntersectValue> mPairMap;
 
-    private float safeDistance_arm2arm = 3;           // M
-    private float safeDistance_arm2rope = 5;          // M
+    private float safeDistance_arm2arm = 6;           // M
 
     private Timer mTimer;
     private int curCheckId;
@@ -100,14 +99,6 @@ public class AntiCollisionAlgorithm implements InfoListener {
             }
         }
         return false;
-    }
-
-    public void setSafeDistance_arm2arm(float value) {
-        safeDistance_arm2arm = value;
-    }
-
-    public void setSafeDistance_arm2rope(float value) {
-        safeDistance_arm2rope = value;
     }
 
     // set current tower crane
@@ -238,7 +229,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
         }
     }
 
-    // TODO: it's for demo
+    // it's for demo
     private void simulation() {
         for (TowerCraneInfo info : mTCInfoList) {
             if (info.getAngle() >= 360) {
@@ -253,12 +244,20 @@ public class AntiCollisionAlgorithm implements InfoListener {
         }
     }
 
-    // TODO: done it
     // check higher tower rope safe range with lower tower distance
     private void checkCollision(Map.Entry<IntersectKey, IntersectValue> entry) {
         IntersectKey key = entry.getKey();
         IntersectValue value = entry.getValue();
 
+        if (value.towerOneBFMark && value.towerTwoFBMark ||
+               value.towerOneFBMark && value.towerOneBFMark) {
+            // 前后臂干涉
+            for (AntiCollisionListener listener : mACListeners) {
+                listener.onCollisionComing(key.idOne, key.idTwo);
+            }
+        }
+
+        // 前臂干涉,两吊臂间最小水平距不能小于 safeDistance_arm2arm
         TowerCraneInfo higher = getTowerCraneInfoById(key.idOne);
         TowerCraneInfo lower = getTowerCraneInfoById(key.idTwo);
         if (higher == null || lower == null) {
@@ -269,14 +268,31 @@ public class AntiCollisionAlgorithm implements InfoListener {
             higher = lower;
             lower = temp;
         }
-//
-//        if (higher.getArmToGroundHeight() - lower.getArmToGroundHeight() <= safeDistance_arm2arm) {
-//            // 1. 如果吊臂高度差小于等于安全距离,则直接检测吊臂前端
-//            float x = higher.getCoordinateX() + higher.getFrontArmLength();
-//        } else {
-//            // 2. 否则检测低位塔机到吊绳的安全距离
-//            float j;
-//        }
+
+        AngleSaver saver = new AngleSaver();
+        float hArmPointX = higher.getCoordinateX() + (float) Math.cos(higher.getAngle() * Math.PI / 180) * higher.getFrontArmLength();
+        float hArmPointY = higher.getCoordinateY() + (float) Math.sin(higher.getAngle() * Math.PI / 180) * higher.getFrontArmLength();
+        obtainAngle(lower.getCoordinateX(), hArmPointX, lower.getCoordinateY(), hArmPointY, lower.getFrontArmLength(), safeDistance_arm2arm, saver);
+
+        LogUtils.d("lower " + lower.getAngle() + " " + saver.min + " " + saver.max);
+        if (checkIFAngleInRange(lower.getAngle(), saver.min, saver.max)) {
+            // 低塔在高塔前臂顶端危险范围内
+            for (AntiCollisionListener listener : mACListeners) {
+                listener.onCollisionComing(key.idOne, key.idTwo);
+            }
+        }
+
+        float lArmPointX = lower.getCoordinateX() + (float) Math.cos(lower.getAngle() * Math.PI / 180) * lower.getFrontArmLength();
+        float lArmPointY = lower.getCoordinateY() + (float) Math.sin(lower.getAngle() * Math.PI / 180) * lower.getFrontArmLength();
+        obtainAngle(higher.getCoordinateX(), lArmPointX, higher.getCoordinateY(), lArmPointY, higher.getFrontArmLength(), safeDistance_arm2arm, saver);
+
+        LogUtils.d("height " + higher.getAngle() + " " + saver.min + " " + saver.max);
+        if (checkIFAngleInRange(higher.getAngle(), saver.min, saver.max)) {
+            // 高塔在低塔前臂顶端危险范围内
+            for (AntiCollisionListener listener : mACListeners) {
+                listener.onCollisionComing(key.idOne, key.idTwo);
+            }
+        }
     }
 
     public void stop() {
@@ -597,17 +613,16 @@ public class AntiCollisionAlgorithm implements InfoListener {
      * angle为塔机实时角度值,范围为[0,360)
      */
     private boolean checkIFAngleInRange(float angle, float min, float max) {
-
-        if (min > 0 && max > 0) {
+        if (min >= 0 && max >= 0) {
             return (angle >= min) && (angle <= max);
         } else if (min < 0 && max < 0) {
             angle -= 360;
             return (angle >= min) && (angle <= max);
-        } else if (min <0 && max >= 0) {
+        } else if (min < 0 && max >= 0) {
             return ((angle >= min + 360) && (angle <= 360)) ||
                     ((angle >= 0) && (angle <= max));
         } else {
-            LogUtils.e("error angle type!");
+            LogUtils.e("error angle type! min = " + min + " max = " + max);
         }
         return false;
     }
