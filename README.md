@@ -9,6 +9,7 @@ Support by And Thanks:<br>
 * [pedant/sweet-alert-dialog](https://github.com/pedant/sweet-alert-dialog)
 * [Sefford/CircularProgressDrawable](https://github.com/Sefford/CircularProgressDrawable)
 * [cachapa/ExpandableLayout](https://github.com/cachapa/ExpandableLayout)
+* [kyleduo/SwitchButton](https://github.com/kyleduo/SwitchButton)
 
 <br>
 
@@ -18,7 +19,9 @@ Support by And Thanks:<br>
 
     2D View:
     The Construction Site View can be scaled and dragged as you please
-![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d.png)
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d_1.png)
+<br>
+![](https://github.com/uCloudCastle/TajiProject/raw/master/githubImg/2d_2.png)
 
     3DView:
     3D simulation monitoring of The real Construction Site
