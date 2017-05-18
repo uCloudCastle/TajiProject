@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
@@ -65,15 +66,136 @@ public class TowerDataItemList extends LinearLayout implements CheckChangedListe
         LayoutInflater.from(context).inflate(R.layout.widgets_towerdataitemlist, this, true);
 
         mItemId = (ListDataItem) findViewById(R.id.tower_data_item_id);
+        mItemId.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                int setId = 0;
+                try {
+                    setId = Integer.parseInt(str);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+                if (AntiCollisionAlgorithm.getInstance().isIdExist(setId)) {
+                    Toast.makeText(mContext, "不支持重复的塔机ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setIdentifier(setId);
+            }
+        });
+
         mItemModel = (ListDataItem) findViewById(R.id.tower_data_item_model);
+        mItemModel.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setModelName(str);
+            }
+        });
+
         mItemX = (ListDataItem) findViewById(R.id.tower_data_item_x);
+        mItemX.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float x = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setCoordinateX(x);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemY = (ListDataItem) findViewById(R.id.tower_data_item_y);
+        mItemY.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float y = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setCoordinateY(y);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemFrontArm = (ListDataItem) findViewById(R.id.tower_data_item_frontarm);
+        mItemFrontArm.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float front = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setFrontArmLength(front);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemRearArm = (ListDataItem) findViewById(R.id.tower_data_item_reararm);
+        mItemRearArm.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float rear = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setRearArmLength(rear);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemHeight = (ListDataItem) findViewById(R.id.tower_data_item_height);
+        mItemHeight.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float height = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setArmToGroundHeight(height);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemTrolleyDistance = (ListDataItem) findViewById(R.id.tower_data_item_trolleydistance);
+        mItemTrolleyDistance.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float td = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setTrolleyDistance(td);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemRopeLength = (ListDataItem) findViewById(R.id.tower_data_item_ropelength);
+        mItemRopeLength.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float ropelen = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setRopeLength(ropelen);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mItemAngle = (ListDataItem) findViewById(R.id.tower_data_item_angle);
+        mItemAngle.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float angle = Float.parseFloat(str);
+                    AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo().setAngle(angle);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mIndicatorLiftweight = (StatusIndicatorItem) findViewById(R.id.tower_data_item_limiter_liftweight);
         mIndicatorLiftheight = (StatusIndicatorItem) findViewById(R.id.tower_data_item_limiter_liftheight);
         mIndicatorTorque = (StatusIndicatorItem) findViewById(R.id.tower_data_item_limiter_torque);

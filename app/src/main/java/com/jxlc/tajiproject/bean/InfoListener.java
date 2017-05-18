@@ -13,4 +13,7 @@ public interface InfoListener {
 
     // for painter
     void onPaintInfoChanged(int id);
+
+    // for layout
+    void onLayoutInfoChanged(int id);
 }

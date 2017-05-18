@@ -47,11 +47,58 @@ public class EnvDataItemList extends LinearLayout implements InfoListener {
         LayoutInflater.from(context).inflate(R.layout.widgets_envdataitemlist, this, true);
 
         mItemX = (ListDataItem) findViewById(R.id.env_data_item_x);
-        mItemY = (ListDataItem) findViewById(R.id.env_data_item_y);
-        mItemWindSpeed = (ListDataItem) findViewById(R.id.env_data_item_windspeed);
-        mItemTemperature = (ListDataItem) findViewById(R.id.env_data_item_temperature);
-        inputData();
+        mItemX.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float width = Float.parseFloat(str);
+                    EnvironmentInfo.getInstance().setConstructionSiteWidth(width);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
+        mItemY = (ListDataItem) findViewById(R.id.env_data_item_y);
+        mItemY.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float height = Float.parseFloat(str);
+                    EnvironmentInfo.getInstance().setConstructionSiteHeight(height);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mItemWindSpeed = (ListDataItem) findViewById(R.id.env_data_item_windspeed);
+        mItemWindSpeed.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float windspeed = Float.parseFloat(str);
+                    EnvironmentInfo.getInstance().setWindSpeed(windspeed);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mItemTemperature = (ListDataItem) findViewById(R.id.env_data_item_temperature);
+        mItemTemperature.addInputResultListener(new ListDataItem.OnInputResultListener() {
+            @Override
+            public void OnInputResult(String str) {
+                try {
+                    float temperature = Float.parseFloat(str);
+                    EnvironmentInfo.getInstance().setTemperature(temperature);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        inputData();
         EnvironmentInfo.getInstance().addListener(this);
     }
 
@@ -74,4 +121,7 @@ public class EnvDataItemList extends LinearLayout implements InfoListener {
 
     @Override
     public void onPaintInfoChanged(int id) {}
+
+    @Override
+    public void onLayoutInfoChanged(int id) {}
 }

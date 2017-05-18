@@ -40,8 +40,9 @@ import static com.jxlc.tajiproject.algorithm.IntersectValue.INTERSECT_TYPE_REACH
 
 public class AntiCollisionAlgorithm implements InfoListener {
     private List<TowerCraneInfo> mTCInfoList;
-    private List<AntiCollisionListener> mListeners;
+    private List<AntiCollisionListener> mACListeners;
     private List<CheckChangedListener> mCheckListeners;
+    private List<InfoListChangedListener> mListChangedListeners;
     private List<IntersectKey> mPairList;
     private ConcurrentHashMap<IntersectKey, IntersectValue> mPairMap;
 
@@ -54,8 +55,9 @@ public class AntiCollisionAlgorithm implements InfoListener {
 
     private AntiCollisionAlgorithm(){
         mTCInfoList = new ArrayList<>();
-        mListeners = new ArrayList<>();
+        mACListeners = new ArrayList<>();
         mCheckListeners = new ArrayList<>();
+        mListChangedListeners = new ArrayList<>();
         mPairList = new ArrayList<>();
         mPairMap = new ConcurrentHashMap<>();
     }
@@ -64,22 +66,6 @@ public class AntiCollisionAlgorithm implements InfoListener {
     }
     public static AntiCollisionAlgorithm getInstance() {
         return SingletonHolder.INSTANCE;
-    }
-
-    public void addListener(AntiCollisionListener l) {
-        mListeners.add(l);
-    }
-
-    public void removeListener(AntiCollisionListener l) {
-        mListeners.remove(l);
-    }
-
-    public void addCheckListener(CheckChangedListener l) {
-        mCheckListeners.add(l);
-    }
-
-    public void removeCheckListener(CheckChangedListener l) {
-        mCheckListeners.remove(l);
     }
 
     public List<TowerCraneInfo> getTCInfoList() {
@@ -92,39 +78,24 @@ public class AntiCollisionAlgorithm implements InfoListener {
             info.addListener(this);
         }
         updatePairMap();
+        for (InfoListChangedListener listener : mListChangedListeners) {
+            listener.onTowerCraneListChanged();
+        }
     }
 
     public void addTowerCrane(TowerCraneInfo info) {
         info.addListener(this);
         mTCInfoList.add(info);
         updatePairMap();
+        for (InfoListChangedListener listener : mListChangedListeners) {
+            listener.onTowerCraneListChanged();
+        }
     }
 
     public boolean removeTowerCraneById(int id) {
         for (TowerCraneInfo info : mTCInfoList) {
             if (info.getIdentifier() == id) {
-                info.removeListener(this);
-                stop();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        AntiCollisionAlgorithm.this.run();
-                    }
-                }, 2000);
-                mTCInfoList.remove(info);
-                updatePairMap();
-
-                if (id == curCheckId) {
-                    if (mTCInfoList.size() > 0) {
-                        curCheckId = mTCInfoList.get(0).getIdentifier();
-                    } else {
-                        curCheckId = -1;
-                    }
-                    for (CheckChangedListener listener : mCheckListeners) {
-                        listener.onCheckChanged(id, curCheckId);
-                    }
-                }
-
+                removeTowerCraneSafety(info);
                 return true;
             }
         }
@@ -160,6 +131,19 @@ public class AntiCollisionAlgorithm implements InfoListener {
             }
         }
         return null;
+    }
+
+    public boolean isIdExist(int id) {
+        for (TowerCraneInfo info : mTCInfoList) {
+            if(info.getIdentifier() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public TowerCraneInfo getCurTowerCraneInfo() {
+        return getTowerCraneInfoById(curCheckId);
     }
 
     // return -1 if no Tower Crane checked
@@ -222,6 +206,38 @@ public class AntiCollisionAlgorithm implements InfoListener {
         mTimer.scheduleAtFixedRate(task, 0, interval);
     }
 
+    public void pause4While() {
+        stop();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AntiCollisionAlgorithm.this.run();
+            }
+        }, 1000);
+    }
+
+    private void removeTowerCraneSafety(TowerCraneInfo info) {
+        //pause4While();
+        info.removeListener(this);
+        mTCInfoList.remove(info);
+        updatePairMap();
+        for (InfoListChangedListener listener : mListChangedListeners) {
+            listener.onTowerCraneListChanged();
+        }
+
+        if (info.getIdentifier() == curCheckId) {
+            if (mTCInfoList.size() > 0) {
+                curCheckId = mTCInfoList.get(0).getIdentifier();
+            } else {
+                curCheckId = -1;
+            }
+
+            for (CheckChangedListener listener : mCheckListeners) {
+                listener.onCheckChanged(info.getIdentifier(), curCheckId);
+            }
+        }
+    }
+
     // TODO: it's for demo
     private void simulation() {
         for (TowerCraneInfo info : mTCInfoList) {
@@ -281,7 +297,6 @@ public class AntiCollisionAlgorithm implements InfoListener {
 
     private int updateIntersectPairs() {
         mPairList.clear();
-        LogUtils.d("mTCInfoList.size() = " + mTCInfoList.size() + " " + mPairList.size());
         for (int i = 0; i < mTCInfoList.size(); ++i) {
             for (int j = i + 1; j < mTCInfoList.size(); ++j) {
                 float dx = mTCInfoList.get(i).getCoordinateX() - mTCInfoList.get(j).getCoordinateX();
@@ -301,11 +316,11 @@ public class AntiCollisionAlgorithm implements InfoListener {
                 }
             }
         }
-        LogUtils.d("mPairList.size() = " + mPairList.size());
         return mPairList.size();
     }
 
     private void generatePairMap() {
+        mPairMap.clear();
         for (IntersectKey key : mPairList) {
             TowerCraneInfo info1 = getTowerCraneInfoById(key.idOne);
             TowerCraneInfo info2 = getTowerCraneInfoById(key.idTwo);
@@ -342,10 +357,9 @@ public class AntiCollisionAlgorithm implements InfoListener {
                 mPairMap.put(key, value);
             }
 
-            for (AntiCollisionListener listener : mListeners) {
+            for (AntiCollisionListener listener : mACListeners) {
                 listener.onHasIntersection(key.idOne, key.idTwo, value);
             }
-            LogUtils.d(" mPairMap = " + key.toString() + " " + value.toString());
         }
     }
 
@@ -454,14 +468,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         float angle = getTowerCraneInfoById(key.idOne).getAngle();
         if (checkIFAngleInRange(angle, value.towerOneFFAngleMin, value.towerOneFFAngleMax)) {
             if (!value.towerOneFFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontEnterIntersection(key.idOne, key.idTwo, true);
                 }
                 value.towerOneFFMark = true;
             }
         } else {
             if (value.towerOneFFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontLeaveIntersection(key.idOne, key.idTwo, true);
                 }
                 value.towerOneFFMark = false;
@@ -472,14 +486,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         angle = getTowerCraneInfoById(key.idTwo).getAngle();
         if (checkIFAngleInRange(angle, value.towerTwoFFAngleMin, value.towerTwoFFAngleMax)) {
             if (!value.towerTwoFFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontEnterIntersection(key.idTwo, key.idOne, true);
                 }
                 value.towerTwoFFMark = true;
             }
         } else {
             if (value.towerTwoFFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontLeaveIntersection(key.idTwo, key.idOne, true);
                 }
                 value.towerTwoFFMark = false;
@@ -497,14 +511,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         angle = convert2RearAngle(angle);
         if (checkIFAngleInRange(angle, value.towerOneBFAngleMin, value.towerOneBFAngleMax)) {
             if (!value.towerOneBFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onRearEnterIntersection(key.idOne, key.idTwo);
                 }
                 value.towerOneBFMark = true;
             }
         } else {
             if (value.towerOneBFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onRearLeaveIntersection(key.idOne, key.idTwo);
                 }
                 value.towerOneBFMark = false;
@@ -515,14 +529,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         angle = getTowerCraneInfoById(key.idTwo).getAngle();
         if (checkIFAngleInRange(angle, value.towerTwoFBAngleMin, value.towerTwoFBAngleMax)) {
             if (!value.towerTwoFBMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontEnterIntersection(key.idTwo, key.idOne, false);
                 }
                 value.towerTwoFBMark = true;
             }
         } else {
             if (value.towerTwoFBMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontLeaveIntersection(key.idTwo, key.idOne, false);
                 }
                 value.towerTwoFBMark = false;
@@ -539,14 +553,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         float angle = getTowerCraneInfoById(key.idOne).getAngle();
         if (checkIFAngleInRange(angle, value.towerOneFBAngleMin, value.towerOneFBAngleMax)) {
             if (!value.towerOneFBMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontEnterIntersection(key.idOne, key.idTwo, false);
                 }
                 value.towerOneFBMark = true;
             }
         } else {
             if (value.towerOneFBMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onFrontLeaveIntersection(key.idOne, key.idTwo, false);
                 }
                 value.towerOneFBMark = false;
@@ -558,14 +572,14 @@ public class AntiCollisionAlgorithm implements InfoListener {
         angle = convert2RearAngle(angle);
         if (checkIFAngleInRange(angle, value.towerTwoBFAngleMin, value.towerTwoBFAngleMax)) {
             if (!value.towerTwoBFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onRearEnterIntersection(key.idTwo, key.idOne);
                 }
                 value.towerTwoBFMark = true;
             }
         } else {
             if (value.towerTwoBFMark) {
-                for (AntiCollisionListener listener : mListeners) {
+                for (AntiCollisionListener listener : mACListeners) {
                     listener.onRearLeaveIntersection(key.idTwo, key.idOne);
                 }
                 value.towerTwoBFMark = false;
@@ -621,5 +635,32 @@ public class AntiCollisionAlgorithm implements InfoListener {
     @Override
     public void onStableInfoChanged(int id) {
         updatePairMap();
+    }
+
+    @Override
+    public void onLayoutInfoChanged(int id) {}
+
+    public void addListener(AntiCollisionListener l) {
+        mACListeners.add(l);
+    }
+
+    public void removeListener(AntiCollisionListener l) {
+        mACListeners.remove(l);
+    }
+
+    public void addCheckListener(CheckChangedListener l) {
+        mCheckListeners.add(l);
+    }
+
+    public void removeCheckListener(CheckChangedListener l) {
+        mCheckListeners.remove(l);
+    }
+
+    public void addListChangedListener(InfoListChangedListener l) {
+        mListChangedListeners.add(l);
+    }
+
+    public void removeListChangedListener(InfoListChangedListener l) {
+        mListChangedListeners.remove(l);
     }
 }

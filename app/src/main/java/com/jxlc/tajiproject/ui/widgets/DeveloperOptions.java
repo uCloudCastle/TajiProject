@@ -8,9 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
+import com.jxlc.tajiproject.bean.EnvironmentInfo;
+import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import com.kyleduo.switchbutton.SwitchButton;
 
 /**
@@ -27,7 +30,7 @@ public class DeveloperOptions extends LinearLayout {
         this(context, null);
     }
 
-    public DeveloperOptions(Context context, AttributeSet attrs) {
+    public DeveloperOptions(final Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.widgets_developeroptions, this, true);
         mContext = context;
@@ -36,7 +39,33 @@ public class DeveloperOptions extends LinearLayout {
         mAddBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                int tcSize = AntiCollisionAlgorithm.getInstance().getTCInfoList().size();
+                if (tcSize >= 32) {
+                    Toast.makeText(context, "已达到塔机上限", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                TowerCraneInfo info = TowerCraneInfo.getDemoInfo();
+                int tid;
+                while (true) {
+                    tid = (int)(Math.random() * 32) + 1;
+                    if (AntiCollisionAlgorithm.getInstance().isIdExist(tid)) {
+                        continue;
+                    }
+                    break;
+                }
+
+                float fl = (int)(Math.random() * 30) + 50;
+                float ws = EnvironmentInfo.getInstance().getConstructionSiteWidth() - 2 * fl;
+                float hs = EnvironmentInfo.getInstance().getConstructionSiteHeight() - 2 * fl;
+                float x = (int)(Math.random() * ws);
+                float y = (int)(Math.random() * hs);
+
+                info.setIdentifier(tid);
+                info.setFrontArmLength(fl);
+                info.setCoordinateX(x);
+                info.setCoordinateY(y);
+                AntiCollisionAlgorithm.getInstance().addTowerCrane(info);
             }
         });
 

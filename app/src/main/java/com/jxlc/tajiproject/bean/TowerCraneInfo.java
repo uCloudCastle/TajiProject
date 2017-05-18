@@ -113,6 +113,7 @@ public class TowerCraneInfo {
         for (InfoListener l : mListeners) {
             l.onInfoChanged(identifier);
             l.onStableInfoChanged(identifier);
+            l.onLayoutInfoChanged(identifier);
         }
     }
 
@@ -125,6 +126,7 @@ public class TowerCraneInfo {
         for (InfoListener l : mListeners) {
             l.onInfoChanged(identifier);
             l.onStableInfoChanged(identifier);
+            l.onLayoutInfoChanged(identifier);
         }
     }
 
@@ -138,6 +140,7 @@ public class TowerCraneInfo {
             l.onInfoChanged(identifier);
             l.onPaintInfoChanged(identifier);
             l.onStableInfoChanged(identifier);
+            l.onLayoutInfoChanged(identifier);
         }
     }
 

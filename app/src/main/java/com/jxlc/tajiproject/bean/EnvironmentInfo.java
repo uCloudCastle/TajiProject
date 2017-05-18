@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class EnvironmentInfo {
-    private final static int INFO_CHANGED_ID = 3202;
+    public final static int ENV_INFO_CHANGED_ID = 3202;
 
     private List<InfoListener> mListeners;
     private float windSpeed;                       // M/s
@@ -41,7 +41,7 @@ public class EnvironmentInfo {
     public void setWindSpeed(float windSpeed) {
         this.windSpeed = windSpeed;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged(INFO_CHANGED_ID);
+            l.onInfoChanged(ENV_INFO_CHANGED_ID);
         }
     }
 
@@ -52,7 +52,7 @@ public class EnvironmentInfo {
     public void setTemperature(float temperature) {
         this.temperature = temperature;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged(INFO_CHANGED_ID);
+            l.onInfoChanged(ENV_INFO_CHANGED_ID);
         }
     }
 
@@ -63,7 +63,7 @@ public class EnvironmentInfo {
     public void setConstructionSiteWidth(float constructionSiteWidth) {
         this.constructionSiteWidth = constructionSiteWidth;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged(INFO_CHANGED_ID);
+            l.onInfoChanged(ENV_INFO_CHANGED_ID);
         }
     }
 
@@ -74,7 +74,7 @@ public class EnvironmentInfo {
     public void setConstructionSiteHeight(float constructionSiteHeight) {
         this.constructionSiteHeight = constructionSiteHeight;
         for (InfoListener l : mListeners) {
-            l.onInfoChanged(INFO_CHANGED_ID);
+            l.onInfoChanged(ENV_INFO_CHANGED_ID);
         }
     }
 

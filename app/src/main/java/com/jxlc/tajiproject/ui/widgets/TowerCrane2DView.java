@@ -176,6 +176,9 @@ public class TowerCrane2DView extends View implements InfoListener, View.OnClick
     public void onStableInfoChanged(int id) {}
 
     @Override
+    public void onLayoutInfoChanged(int id) {}
+
+    @Override
     public void onClick(View view) {
         if (isChecked) {
             return;

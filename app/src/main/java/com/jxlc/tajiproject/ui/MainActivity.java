@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         info3.setCoordinateY(400);
         info3.setFrontArmLength(80);
         info3.setRearArmLength(12);
-        info3.setAngle(0);
+        info3.setAngle(270);
         demoList.add(info3);
         TowerCraneInfo info4 = TowerCraneInfo.getDemoInfo();
         info4.setIdentifier(4);
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         info4.setCoordinateY(440);
         info4.setFrontArmLength(80);
         info4.setRearArmLength(12);
-        info4.setAngle(270);
+        info4.setAngle(100);
         demoList.add(info4);
         AntiCollisionAlgorithm.getInstance().setTowerCraneList(demoList);
         AntiCollisionAlgorithm.getInstance().setCheckTowerId(demoList.get(0).getIdentifier());

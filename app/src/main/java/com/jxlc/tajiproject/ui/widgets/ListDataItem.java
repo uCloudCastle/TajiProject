@@ -17,6 +17,9 @@ import android.widget.TextView;
 import com.jxlc.tajiproject.R;
 import com.randal.aviana.DensityUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by randal on 2017/5/16.
  */
@@ -26,6 +29,9 @@ public class ListDataItem extends RelativeLayout {
     private TextView mTextView;
     private EditText mEditText;
     private TextView mUnitView;
+
+    private List<OnInputResultListener> mInputResultListeners;
+    private String focusInStr;
 
     private static final int TEXT_WIDTH = 60;         // dp
     private static final int TEXT_SIZE = 13;         // sp
@@ -44,6 +50,7 @@ public class ListDataItem extends RelativeLayout {
     public ListDataItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+        mInputResultListeners = new ArrayList<>();
 
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ListDataItem);
@@ -90,6 +97,25 @@ public class ListDataItem extends RelativeLayout {
         int editId = View.generateViewId();
         mEditText.setId(editId);
         addView(mEditText, elp);
+
+        mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {                  // focus
+                    focusInStr = mEditText.getText().toString();
+                } else {                 // lose focrs
+                    if (!mEditText.getText().toString().equals(focusInStr)) {
+                        for (OnInputResultListener l : mInputResultListeners) {
+                            l.OnInputResult(mEditText.getText().toString());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void addInputResultListener(OnInputResultListener l) {
+        mInputResultListeners.add(l);
     }
 
     public void setTitle(String str) {
@@ -97,10 +123,16 @@ public class ListDataItem extends RelativeLayout {
     }
 
     public void setContent(String str) {
-        mEditText.setText(str);
+        if (!mEditText.getText().toString().equals(str) && !mEditText.hasFocus()) {
+            mEditText.setText(str);
+        }
     }
 
     public String getContent() {
         return mEditText.getText().toString();
+    }
+
+    public interface OnInputResultListener {
+        void OnInputResult(String str);
     }
 }
