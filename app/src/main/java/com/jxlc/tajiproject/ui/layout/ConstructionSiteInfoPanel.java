@@ -101,7 +101,7 @@ public class ConstructionSiteInfoPanel extends LinearLayout implements AntiColli
                     Bundle bundle = msg.getData();
                     int id1 = bundle.getInt(BUNDLE_ID_1);
                     int id2 = bundle.getInt(BUNDLE_ID_2);
-                    String text = "<font color='#FF8800'>塔机#" + id1 + "与塔机#" + id2 + "相距过近,请注意避让!</font>";
+                    String text = "<font color='#FF6666'>塔机#" + id1 + "与塔机#" + id2 + "相距过近,请注意避让!</font>";
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         refreshStatus(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
                     } else {
