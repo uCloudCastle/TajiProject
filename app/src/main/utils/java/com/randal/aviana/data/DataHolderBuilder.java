@@ -1,6 +1,9 @@
 package com.randal.aviana.data;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -54,11 +57,14 @@ public class DataHolderBuilder {
         private List<T> objectList;
         private List<OnObjectChangedListener> oCallbacks;
         private List<OnObjectListChangedListener> olCallbacks;
+        private List<Pair<Integer, Integer>> hash2IdList;
+        private BitSet idSet;
 
         private DataHolder(){
             objectList = new ArrayList<>();
             oCallbacks = new ArrayList<>();
             olCallbacks = new ArrayList<>();
+            hash2IdList = new ArrayList<>();
         }
 
         public void notifyObjectChanged(int hashCode, int usrDef) {
@@ -73,6 +79,7 @@ public class DataHolderBuilder {
             }
 
             objectList.add(o);
+
             for (OnObjectListChangedListener l : olCallbacks) {
                 l.OnObjectAdded(o.hashCode());
             }
@@ -130,6 +137,35 @@ public class DataHolderBuilder {
 
         public boolean unregisterObjectListChangedListener(OnObjectListChangedListener l) {
             return  !(l == null || !olCallbacks.contains(l)) && olCallbacks.remove(l);
+        }
+
+        private int insertPair(int hashCode) {
+            int id = produceId();
+            if (id == -1) {
+                return id;
+            }
+
+            hash2IdList.add(new Pair<>(hashCode, id));
+            idSet.set(id);
+            return id;
+        }
+
+        private void removePair(int hashCode) {
+            for (Pair<Integer, Integer> pair : hash2IdList) {
+                if (pair.first == hashCode) {
+                    hash2IdList.remove(pair);
+                    idSet.clear(pair.second);
+                }
+            }
+        }
+
+        private int produceId() {
+            for (int i = 0; i < idSet.size(); ++ i) {
+                if (!idSet.get(i)) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 }
