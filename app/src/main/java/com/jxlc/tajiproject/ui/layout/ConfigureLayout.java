@@ -40,29 +40,28 @@ public class ConfigureLayout extends FrameLayout {
         mBtn = (Button)findViewById(R.id.con_btn);
 
         MyData ee = new MyData();
-        final int eeid = ee.hashCode();
         final DataHolder<MyData> sing = DataHolderBuilder.getSingleton(MyData.class);
-        sing.addObject(ee);
+        final int id = sing.addObject(ee);
         sing.registerObjectChangedListener(new DataHolderBuilder.OnObjectChangedListener() {
             @Override
-            public void OnObjectChanged(int hashCode, int part) {
-                LogUtils.d(hashCode + " ffff " + part + " " + eeid);
-                if (hashCode == eeid) {
-                    mText1.setText(sing.getObjectByHashCode(hashCode).toString());
+            public void OnObjectChanged(int oid, int part) {
+                LogUtils.d(oid + " ffff " + part + " ");
+                if (oid == id) {
+                    mText1.setText(sing.getObjectById(oid).toString());
                 }
             }
         });
 
         sing.registerObjectListChangedListener(new DataHolderBuilder.OnObjectListChangedListener() {
             @Override
-            public void OnObjectAdded(int hashCode) {
-                LogUtils.d(hashCode + " ");
+            public void OnObjectAdded(int id) {
+                LogUtils.d(id + " ");
                 mText2.setText(sing.getObjectList().toString());
             }
 
             @Override
-            public void OnObjectRemoved(int hashCode) {
-                LogUtils.d(hashCode + " ");
+            public void OnObjectRemoved(int id) {
+                LogUtils.d(id + " ");
                 mText2.setText(sing.getObjectList().toString());
             }
 
@@ -77,9 +76,9 @@ public class ConfigureLayout extends FrameLayout {
             @Override
             public void onClick(View view) {
                 List<MyData> data = sing.getObjectList();
-                data.get(0).setI(33);
-                data.get(0).setF(10.12f);
-                data.get(0).setS("876");
+                data.get(0).setI((int)(Math.random() * 20));
+                data.get(0).setF((float) Math.random() * 10);
+                data.get(0).setS(String.valueOf(Math.random() * 800));
                 DataHolderBuilder.getSingleton(MyData.class).addObject(new MyData());
             }
         });
@@ -92,17 +91,17 @@ public class ConfigureLayout extends FrameLayout {
 
         public void setI(int aa) {
             i = aa;
-            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this.hashCode(), 1);
+            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this, 1);
         }
 
         public void setF(float aa) {
             f = aa;
-            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this.hashCode(), 2);
+            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this, 2);
         }
 
         public void setS(String aa) {
             srt = aa;
-            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this.hashCode(), 3);
+            DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this, 3);
         }
 
         @Override

@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  *
  * 1, Define a custom data type;
  * 2, Place
- *         DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this.hashCode(), 1);
+ *         DataHolderBuilder.getSingleton(MyData.class).notifyObjectChanged(this, 1);
  *    where the data is modified
  * 3, RegisterListener by
  *         registerObjectChangedListener()/registerObjectListChangedListener()
@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 
 public class DataHolderBuilder {
+    public static final int DATA_HOLDER_ERROR_VALUE = -1;
+    public static final int DATA_HOLDER_BITSET_SIZE = 64;
+
     @SuppressWarnings("rawtypes")
     private static final ConcurrentMap<Class, DataHolder> map = new ConcurrentHashMap<>();
 
@@ -41,12 +44,12 @@ public class DataHolderBuilder {
     }
 
     public interface OnObjectChangedListener {
-        void OnObjectChanged(int hashCode, int usrDef);
+        void OnObjectChanged(int oid, int usrDef);
     }
 
     public interface OnObjectListChangedListener {
-        void OnObjectAdded(int hashCode);
-        void OnObjectRemoved(int hashCode);
+        void OnObjectAdded(int oid);
+        void OnObjectRemoved(int oid);
         void OnObjectListChanged();
     }
 
@@ -65,42 +68,50 @@ public class DataHolderBuilder {
             oCallbacks = new ArrayList<>();
             olCallbacks = new ArrayList<>();
             hash2IdList = new ArrayList<>();
+            idSet = new BitSet(DATA_HOLDER_BITSET_SIZE);
         }
 
-        public void notifyObjectChanged(int hashCode, int usrDef) {
+        public void notifyObjectChanged(T object, int usrDef) {
+            int oid = getIdByHashCode(object.hashCode());
+            if (oid == DATA_HOLDER_ERROR_VALUE) {
+                return;
+            }
+
             for (OnObjectChangedListener l : oCallbacks) {
-                l.OnObjectChanged(hashCode, usrDef);
+                l.OnObjectChanged(oid, usrDef);
             }
         }
 
-        public void addObject(T o) {
+        public int addObject(T o) {
             if (o == null) {
-                return;
+                return DATA_HOLDER_ERROR_VALUE;
             }
 
             objectList.add(o);
-
+            int id = insertPair(o.hashCode());
             for (OnObjectListChangedListener l : olCallbacks) {
-                l.OnObjectAdded(o.hashCode());
+                l.OnObjectAdded(id);
             }
+            return id;
         }
 
-        public void removeObject(T o) {
+        public int removeObject(T o) {
             if (o == null || !objectList.contains(o)) {
-                return;
+                return DATA_HOLDER_ERROR_VALUE;
             }
 
             objectList.remove(o);
+            int id = removePair(o.hashCode());
             for (OnObjectListChangedListener l : olCallbacks) {
-                l.OnObjectRemoved(o.hashCode());
+                l.OnObjectRemoved(id);
             }
+            return id;
         }
 
-        public T getObjectByHashCode(int hash) {
-            for (T o : objectList) {
-                if (o.hashCode() == hash) {
-                    return o;
-                }
+        public T getObjectById(int id) {
+            int hash = getHashCodeById(id);
+            if (hash != DATA_HOLDER_ERROR_VALUE) {
+                return getObjectByHashCode(hash);
             }
             return null;
         }
@@ -117,7 +128,9 @@ public class DataHolderBuilder {
         }
 
         public void releaseData() {
-            objectList = null;
+            objectList.clear();
+            hash2IdList.clear();
+            idSet.clear();
             for (OnObjectListChangedListener l : olCallbacks) {
                 l.OnObjectListChanged();
             }
@@ -141,7 +154,7 @@ public class DataHolderBuilder {
 
         private int insertPair(int hashCode) {
             int id = produceId();
-            if (id == -1) {
+            if (id == DATA_HOLDER_ERROR_VALUE) {
                 return id;
             }
 
@@ -150,13 +163,42 @@ public class DataHolderBuilder {
             return id;
         }
 
-        private void removePair(int hashCode) {
+        private int removePair(int hashCode) {
             for (Pair<Integer, Integer> pair : hash2IdList) {
                 if (pair.first == hashCode) {
                     hash2IdList.remove(pair);
                     idSet.clear(pair.second);
+                    return pair.second;
                 }
             }
+            return DATA_HOLDER_ERROR_VALUE;
+        }
+
+        private T getObjectByHashCode(int hash) {
+            for (T o : objectList) {
+                if (o.hashCode() == hash) {
+                    return o;
+                }
+            }
+            return null;
+        }
+
+        private int getIdByHashCode(int hashCode) {
+            for (Pair<Integer, Integer> pair : hash2IdList) {
+                if (pair.first == hashCode) {
+                    return pair.second;
+                }
+            }
+            return DATA_HOLDER_ERROR_VALUE;
+        }
+
+        private int getHashCodeById(int id) {
+            for (Pair<Integer, Integer> pair : hash2IdList) {
+                if (pair.second == id) {
+                    return pair.first;
+                }
+            }
+            return DATA_HOLDER_ERROR_VALUE;
         }
 
         private int produceId() {
@@ -165,7 +207,7 @@ public class DataHolderBuilder {
                     return i;
                 }
             }
-            return -1;
+            return DATA_HOLDER_ERROR_VALUE;
         }
     }
 }
