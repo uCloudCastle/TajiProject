@@ -10,11 +10,9 @@ import java.util.Date;
  */
 public final class TimeUtil {
 
-
     public static long currentTimestamp(){
         return System.currentTimeMillis();
     }
-
 
     /**
      * Parse the format string to calendar

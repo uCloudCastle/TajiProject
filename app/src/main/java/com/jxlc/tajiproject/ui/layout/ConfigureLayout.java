@@ -24,7 +24,7 @@ public class ConfigureLayout extends FrameLayout {
     private Context mContext;
     private TextView mText1;
     private TextView mText2;
-    private TextView mBtn;
+    private Button mBtn;
 
     public ConfigureLayout(@NonNull Context context) {
         this(context, null);
