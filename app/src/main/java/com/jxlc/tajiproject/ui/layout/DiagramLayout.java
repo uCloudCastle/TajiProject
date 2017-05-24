@@ -10,8 +10,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.jxlc.tajiproject.R;
-import com.randal.aviana.database.KeyValueTable;
+import com.randal.aviana.LogUtils;
 import com.randal.aviana.database.SQLiteUtils;
+import com.randal.aviana.database.TextTable;
 
 /**
  * Created by randal on 2017/5/4.
@@ -20,8 +21,9 @@ import com.randal.aviana.database.SQLiteUtils;
 public class DiagramLayout extends FrameLayout {
     private Context mContext;
     private TextView mText;
+    private TextView mText2;
+    private TextView mText3;
     private Button mBtn;
-    int pos = 0;
 
     public DiagramLayout(@NonNull Context context) {
         this(context, null);
@@ -32,23 +34,58 @@ public class DiagramLayout extends FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.layout_diagram, this, true);
         mContext = context;
 
-        final String key[] = {"11", "22", "33"};
-        final String value[] = {"77", "88", "99"};
+        final String[] value = {"11", "22", "33", "44", "55"};
+        final TextTable table = SQLiteUtils.createOrOpenTextTable(context, "test.db", "txttable",
+                new String[]{"a", "b", "c", "d", "e"}, null);
 
         mText = (TextView)findViewById(R.id.diagram_textview);
+        mText.setText(table.queryAll2String());
+
+        mText2 = (TextView)findViewById(R.id.diagram_textview2);
+        mText3 = (TextView)findViewById(R.id.diagram_textview3);
         mBtn = (Button)findViewById(R.id.diagram_btn);
-        final KeyValueTable table = SQLiteUtils.createOrOpenKeyValueTable(context, "testdb", "testtable");
 
         mBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (pos >= 3) {
-                    pos = 0;
-                }
+                long id = table.insert(value);
+                LogUtils.d("id = " + id);
 
-                table.insert(key[pos], value[pos]);
-                ++pos;
+                mText.setText(table.queryAll2String());
             }
         });
+
+        ((Button)findViewById(R.id.diagram_btn2)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String[] value = table.query("1");
+                mText2.setText(value.toString());
+            }
+        });
+
+        ((Button)findViewById(R.id.diagram_btn3)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                table.delete("1");
+                mText.setText(table.queryAll2String());
+            }
+        });
+
+//        table.addKeyValueTableListener(new KeyValueTable.KeyValueTableListener() {
+//            @Override
+//            public void onValueAdded(String key, String value) {
+//                mText3.setText(table.getPairListString());
+//            }
+//
+//            @Override
+//            public void onValueUpdated(String key, String value) {
+//                mText3.setText(table.getPairListString());
+//            }
+//
+//            @Override
+//            public void onValueRemoved(String key) {
+//                mText3.setText(table.getPairListString());
+//            }
+//        });
     }
 }
