@@ -14,8 +14,19 @@ public final class TimeUtil {
         throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
     }
 
+    private static final String DEFAULT_TIME_FORMAT = "yyyy-MM-dd kk:mm:ss";
+
     public static long currentTimestamp(){
         return System.currentTimeMillis();
+    }
+
+    /**
+     * Parse the Timestamp for day
+     */
+    public static long getTimestampForDay(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, day);
+        return calendar.getTimeInMillis();
     }
 
     /**
