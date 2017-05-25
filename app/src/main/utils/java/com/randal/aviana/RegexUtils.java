@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
  * 正则表达式工具类，提供一些常用的正则表达式
  */
 public class RegexUtils {
+
+    private RegexUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
     /**
      * 匹配全网IP的正则表达式
      */

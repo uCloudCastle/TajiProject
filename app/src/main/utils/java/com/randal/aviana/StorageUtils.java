@@ -15,7 +15,9 @@ import java.io.File;
 //Context.getPackageResourcePath()                   : /data/app/com.zhd-1.apk
 
 public class StorageUtils {
-    private StorageUtils(){}
+    private StorageUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
 
     public static long getFreeSizeKB(String path, boolean createPath) {          // KB
         File folder = new File(path);

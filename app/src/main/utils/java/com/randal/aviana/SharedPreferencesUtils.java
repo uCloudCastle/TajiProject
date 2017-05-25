@@ -6,7 +6,11 @@ import android.content.SharedPreferences;
 
 public class SharedPreferencesUtils {
 
-    private static final String FILE_NAME = "save_file_name";
+    private SharedPreferencesUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
+    private static final String FILE_NAME = "sp_file_name";
 
     /**
      * sava data to file
@@ -32,7 +36,7 @@ public class SharedPreferencesUtils {
         } else if ("Long".equals(type)) {
             editor.putLong(key, (Long) data);
         }
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -60,6 +64,16 @@ public class SharedPreferencesUtils {
             return sharedPreferences.getLong(key, (Long) defValue);
         }
         return null;
+    }
+
+    /**
+     * SP中清除所有数据
+     */
+    public void clear(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences
+                (FILE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear().apply();
     }
 }
 

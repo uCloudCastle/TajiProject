@@ -33,6 +33,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:keepScreenOn="true"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

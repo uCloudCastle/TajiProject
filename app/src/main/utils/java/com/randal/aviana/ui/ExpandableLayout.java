@@ -21,6 +21,30 @@ import static com.randal.aviana.ui.ExpandableLayout.State.COLLAPSING;
 import static com.randal.aviana.ui.ExpandableLayout.State.EXPANDED;
 import static com.randal.aviana.ui.ExpandableLayout.State.EXPANDING;
 
+/* Usage:
+    <com.randal.aviana.ui.ExpandableLayout
+            android:id="@+id/expandable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:el_duration="1000"
+            app:el_expanded="false">
+
+            <YourViewWishToExpand/>
+
+    </com.randal.aviana.ui.ExpandableLayout>
+
+    expand = (ExpandableLayout) findViewById(R.id.expandable);
+    btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (expand.isExpanded()) {
+                    expand.collapse();
+                } else {
+                    expand.expand();
+                }
+            }
+        });
+*/
 
 public class ExpandableLayout extends FrameLayout {
     public interface State {

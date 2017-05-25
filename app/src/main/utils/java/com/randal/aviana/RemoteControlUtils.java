@@ -18,6 +18,11 @@ import android.view.KeyEvent;
 }
 */
 public class RemoteControlUtils {
+
+    private RemoteControlUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
     private static char[] mKeyInput;
     private static long[] mHits;
     private static String KEY_WORD;

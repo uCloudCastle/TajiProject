@@ -6,8 +6,12 @@ import android.os.SystemClock;
  * v d i w e
  */
 public class LogUtils {
-    protected static final String TAG = "Aviana";
-    public static final boolean DEBUG = true;
+    private LogUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
+    private static final String TAG = "Aviana";
+    private static final boolean DEBUG = true;
     private static long MARK_TIME = 0;
 
     /**

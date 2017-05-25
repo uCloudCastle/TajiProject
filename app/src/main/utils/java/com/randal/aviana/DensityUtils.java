@@ -5,6 +5,9 @@ import android.content.Context;
 import android.util.TypedValue;
 
 public class DensityUtils {
+    private DensityUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
 
     /**
      * dp转px

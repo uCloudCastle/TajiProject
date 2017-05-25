@@ -9,6 +9,10 @@ import android.content.pm.ResolveInfo;
 import java.util.List;
 
 public class IntentUtils {
+    private IntentUtils(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
     /***
      * Android L (lollipop, API 21) introduced a new problem when trying to invoke implicit intent,
      * "java.lang.IllegalArgumentException: Service Intent must be explicit"

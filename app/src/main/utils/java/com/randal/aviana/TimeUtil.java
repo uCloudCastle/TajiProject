@@ -10,6 +10,10 @@ import java.util.Date;
  */
 public final class TimeUtil {
 
+    private TimeUtil(){
+        throw new UnsupportedOperationException("DO NOT INSTANTIATE THIS CLASS");
+    }
+
     public static long currentTimestamp(){
         return System.currentTimeMillis();
     }
