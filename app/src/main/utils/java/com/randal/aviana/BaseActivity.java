@@ -42,9 +42,9 @@ class ActivityCollector {
     }
 
     public static void finishAll() {
-        for (Activity activity : activities) {
-            if (!activity.isFinishing()) {
-                activity.finish();
+        for (int i = activities.size()-1; i >= 0; --i) {
+            if (!activities.get(i).isFinishing()) {
+                activities.get(i).finish();
             }
         }
         activities.clear();
