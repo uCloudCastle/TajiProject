@@ -1,7 +1,5 @@
 package com.randal.aviana;
 
-import static android.icu.text.RelativeDateTimeFormatter.Direction.THIS;
-import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public final class StringUtils {
 
