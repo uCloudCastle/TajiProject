@@ -2,6 +2,8 @@ package com.randal.aviana;
 
 import android.os.SystemClock;
 
+import java.util.List;
+
 /**
  * v d i w e
  */
@@ -44,6 +46,24 @@ public class LogUtils {
         return o.toString();
     }
 
+    /**
+     * Print List that won't care about NullPointerException
+     *
+     * @param list
+     *            The List you would like to print.
+     */
+    public static<T extends Object> String printList(List<T> list) {
+        if (list == null) {
+            return "null";
+        }
+
+        StringBuilder builder = new StringBuilder("{");
+        for (Object o : list) {
+            builder.append("[").append(o.toString()).append("];");
+        }
+        builder.append("}");
+        return builder.toString();
+    }
 
     /**
      * Send a VERBOSE log message.
