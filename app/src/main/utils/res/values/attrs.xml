@@ -9,4 +9,14 @@
         <attr name="android:orientation"/>
     </declare-styleable>
 
+    <declare-styleable name="Slash">
+        <attr name="color" format="color"/>
+        <attr name="width" format="dimension"/>
+        <attr name="direction"/>
+    </declare-styleable>
+
+    <attr name="direction">
+        <enum name="swingRight" value="0"/>
+        <enum name="swingLeft" value="1"/>
+    </attr>
 </resources>
