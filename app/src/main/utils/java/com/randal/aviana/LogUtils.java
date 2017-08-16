@@ -1,6 +1,9 @@
 package com.randal.aviana;
 
+import android.content.Context;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import java.util.List;
 
@@ -15,6 +18,18 @@ public class LogUtils {
     private static final String TAG = "Aviana";
     private static final boolean DEBUG = true;
     private static long MARK_TIME = 0;
+
+    /**
+     * Print Screen Info
+     */
+    public static void printScreenInfo(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        LogUtils.d("width = " + dm.widthPixels
+                + "\nheight = " + dm.heightPixels
+                + "\ndensity = " + dm.density);
+    }
 
     /**
      * Mark Current Time for dumpTime()
