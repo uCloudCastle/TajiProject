@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    group = 'com.felhr.usbserial'
+    version = '1.0.0'
+
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 25
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    task deleteJar(type: org.gradle.api.tasks.Delete){
+        delete 'eclipse_lib/usbserial.jar'
+    }
+
+    //noinspection GroovyAssignabilityCheck
+    task createJar(type: org.gradle.api.tasks.Copy){
+        from('build/intermediates/bundles/release/')
+        into('eclipse_lib/')
+        include('classes.jar')
+        rename('classes.jar', 'usbserial.jar')
+    }
+
+    createJar.dependsOn(deleteJar, build)
+}

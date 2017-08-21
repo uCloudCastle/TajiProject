@@ -1,1 +1,1 @@
-include ':app', ':TajiModule', ':slidemenu'
+include ':app', ':TajiModule', ':slidemenu', 'usbserial'

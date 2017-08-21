@@ -274,7 +274,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
         float hArmPointY = higher.getCoordinateY() + (float) Math.sin(higher.getAngle() * Math.PI / 180) * higher.getFrontArmLength();
         obtainAngle(lower.getCoordinateX(), hArmPointX, lower.getCoordinateY(), hArmPointY, lower.getFrontArmLength(), safeDistance_arm2arm, saver);
 
-        LogUtils.d("lower " + lower.getAngle() + " " + saver.min + " " + saver.max);
+        //LogUtils.d("lower " + lower.getAngle() + " " + saver.min + " " + saver.max);
         if (checkIFAngleInRange(lower.getAngle(), saver.min, saver.max)) {
             // 低塔在高塔前臂顶端危险范围内
             for (AntiCollisionListener listener : mACListeners) {
@@ -286,7 +286,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
         float lArmPointY = lower.getCoordinateY() + (float) Math.sin(lower.getAngle() * Math.PI / 180) * lower.getFrontArmLength();
         obtainAngle(higher.getCoordinateX(), lArmPointX, higher.getCoordinateY(), lArmPointY, higher.getFrontArmLength(), safeDistance_arm2arm, saver);
 
-        LogUtils.d("height " + higher.getAngle() + " " + saver.min + " " + saver.max);
+        //LogUtils.d("height " + higher.getAngle() + " " + saver.min + " " + saver.max);
         if (checkIFAngleInRange(higher.getAngle(), saver.min, saver.max)) {
             // 高塔在低塔前臂顶端危险范围内
             for (AntiCollisionListener listener : mACListeners) {

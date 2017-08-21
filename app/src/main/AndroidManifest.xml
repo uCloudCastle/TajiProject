@@ -41,6 +41,10 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="com.jxlc.tajiproject.transmitter.usbserial.UsbService"
+            android:enabled="true">
+        </service>
     </application>
 
 </manifest>
