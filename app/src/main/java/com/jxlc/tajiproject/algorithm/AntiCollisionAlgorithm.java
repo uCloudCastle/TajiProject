@@ -16,11 +16,8 @@
 
 package com.jxlc.tajiproject.algorithm;
 
-import android.os.Handler;
-
 import com.jxlc.tajiproject.bean.InfoListener;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
-import com.randal.aviana.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,24 +88,24 @@ public class AntiCollisionAlgorithm implements InfoListener {
         }
     }
 
+    // only for transmitter, don't notify to listener
     public void updateTowerCrane(TowerCraneInfo info) {
         if (isIdExist(info.getIdentifier())) {
             TowerCraneInfo localInfo = getTowerCraneInfoById(info.getIdentifier());
-            localInfo.setModelName(info.getModelName());
-            localInfo.setCoordinateX(info.getCoordinateX());
-            localInfo.setCoordinateY(info.getCoordinateY());
-            localInfo.setFrontArmLength(info.getFrontArmLength());
-            localInfo.setRearArmLength(info.getRearArmLength());
-            localInfo.setArmToGroundHeight(info.getArmToGroundHeight());
+            localInfo.modelName = info.getModelName();
+            localInfo.coordinateX = info.getCoordinateX();
+            localInfo.coordinateY = info.getCoordinateY();
+            localInfo.frontArmLength = info.getFrontArmLength();
+            localInfo.rearArmLength = info.getRearArmLength();
+            localInfo.armToGroundHeight = info.getArmToGroundHeight();
             localInfo.setTrolleyDistance(info.getTrolleyDistance());
-            localInfo.setRopeLength(info.getRopeLength());
+            localInfo.ropeLength = info.getRopeLength();
             localInfo.setAngle(info.getAngle());
-            localInfo.setLiftWeightLimiterWorkStatus(info.isLiftWeightLimiterWorkFine());
-            localInfo.setLiftHeightLimiterWorkStatus(info.isLiftHeightLimiterWorkFine());
-            localInfo.setTorqueLimiterWorkStatus(info.isTorqueLimiterWorkFine());
-            localInfo.setOverstrokeLimiterWorkStatus(info.isOverstrokeLimiterWorkFine());
-            localInfo.setSlewingLimiterWorkStatus(info.isSlewingLimiterWorkFine());
-            updatePairMap();
+            localInfo.liftWeightLimiter = info.isLiftWeightLimiterWorkFine();
+            localInfo.liftHeightLimiter = info.isLiftHeightLimiterWorkFine();
+            localInfo.torqueLimiter = info.isTorqueLimiterWorkFine();
+            localInfo.overstrokeLimiter = info.isOverstrokeLimiterWorkFine();
+            localInfo.slewingLimiter = info.isSlewingLimiterWorkFine();
         } else {
             addTowerCrane(info);
         }
@@ -165,11 +162,11 @@ public class AntiCollisionAlgorithm implements InfoListener {
         return curCheckId;
     }
 
-    public void run() {
+    public void run(final boolean onlyRunChecked) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                simulation();
+                simulation(onlyRunChecked);
                 if (mPairMap.isEmpty()) {
                     return;
                 }
@@ -220,16 +217,6 @@ public class AntiCollisionAlgorithm implements InfoListener {
         mTimer.scheduleAtFixedRate(task, 0, interval);
     }
 
-    public void pause4While() {
-        stop();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                AntiCollisionAlgorithm.this.run();
-            }
-        }, 1000);
-    }
-
     private void removeTowerCraneSafety(TowerCraneInfo info) {
         //pause4While();
         info.removeListener(this);
@@ -253,8 +240,12 @@ public class AntiCollisionAlgorithm implements InfoListener {
     }
 
     // it's for demo
-    private void simulation() {
+    private void simulation(boolean onlyRunChecked) {
         for (TowerCraneInfo info : mTCInfoList) {
+            if (onlyRunChecked && info.getIdentifier() != getCheckTowerId()) {
+                continue;
+            }
+
             if (info.getAngle() >= 360) {
                 info.setAngle(0);
             }
@@ -645,7 +636,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
             return ((angle >= min + 360) && (angle <= 360)) ||
                     ((angle >= 0) && (angle <= max));
         } else {
-            LogUtils.e("error angle type! min = " + min + " max = " + max);
+            //LogUtils.e("error angle type! min = " + min + " max = " + max);
         }
         return false;
     }

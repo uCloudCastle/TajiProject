@@ -14,6 +14,7 @@ import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
+import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.kyleduo.switchbutton.SwitchButton;
 
 /**
@@ -24,7 +25,9 @@ public class DeveloperOptions extends LinearLayout {
     private Context mContext;
     private Button mAddBtn;
     private Button mDelBtn;
-    private SwitchButton mRunSwitch;
+    private SwitchButton mWirelessSwitch;
+    private SwitchButton mSingleRunSwitch;
+    private SwitchButton mAllRunSwitch;
 
     public DeveloperOptions(@NonNull Context context) {
         this(context, null);
@@ -78,17 +81,45 @@ public class DeveloperOptions extends LinearLayout {
             }
         });
 
-        mRunSwitch = (SwitchButton)findViewById(R.id.developer_run_switch_button);
-        mRunSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mWirelessSwitch = (SwitchButton)findViewById(R.id.developer_wireless_transmission_switch_button);
+        mWirelessSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    AntiCollisionAlgorithm.getInstance().run();
+                    Transmitter.getInstance(mContext).start();
+                } else {
+                    Transmitter.getInstance(mContext).stop();
+                }
+            }
+        });
+        mWirelessSwitch.setChecked(false);
+
+        mSingleRunSwitch = (SwitchButton)findViewById(R.id.developer_single_run_switch_button);
+        mSingleRunSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    AntiCollisionAlgorithm.getInstance().stop();
+                    AntiCollisionAlgorithm.getInstance().run(true);
                 } else {
                     AntiCollisionAlgorithm.getInstance().stop();
                 }
             }
         });
-        mRunSwitch.setChecked(true);
+        mSingleRunSwitch.setChecked(false);
+
+        mAllRunSwitch = (SwitchButton)findViewById(R.id.developer_all_run_switch_button);
+        mAllRunSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    AntiCollisionAlgorithm.getInstance().stop();
+                    AntiCollisionAlgorithm.getInstance().run(false);
+                } else {
+                    AntiCollisionAlgorithm.getInstance().stop();
+                }
+            }
+        });
+        mAllRunSwitch.setChecked(true);
     }
 }

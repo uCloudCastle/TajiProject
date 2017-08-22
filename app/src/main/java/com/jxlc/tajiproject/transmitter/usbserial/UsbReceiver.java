@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.jxlc.tajiproject.transmitter.Transmitter;
+
 /**
  * Created by Randal on 2017-08-21.
  */
@@ -15,18 +17,23 @@ public class UsbReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
                 Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                Transmitter.getInstance(context).setUsbReady(true);
                 break;
             case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
                 Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
+                Transmitter.getInstance(context).setUsbReady(false);
                 break;
             case UsbService.ACTION_NO_USB: // NO USB CONNECTED
                 Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
+                Transmitter.getInstance(context).setUsbReady(false);
                 break;
             case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
                 Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
+                Transmitter.getInstance(context).setUsbReady(false);
                 break;
             case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
                 Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
+                Transmitter.getInstance(context).setUsbReady(false);
                 break;
         }
     }

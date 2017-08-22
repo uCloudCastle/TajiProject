@@ -38,7 +38,6 @@ import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
-import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.jxlc.tajiproject.ui.fragment.ContentFragment;
 import com.unity3d.player.UnityPlayer;
 
@@ -100,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         initValues();
         setActionBar();
         createMenuList();
-
-        Transmitter.getInstance(MainActivity.this).start();
     }
 
     // set the globe init values here

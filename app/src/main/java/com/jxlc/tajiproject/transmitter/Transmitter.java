@@ -22,6 +22,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Transmitter {
+    private final static String MAGIC_START = "MAGIC_START";
+    private final static String MAGIC_END = "MAGIC_END";
     private final static String DATA_SPLIT_SYMBOL = "#";
 
     private Context mContext;
@@ -29,6 +31,7 @@ public class Transmitter {
     private UsbReceiver usbReceiver;
     private UsbHandler mHandler;
     private Timer mTimer;
+    private boolean usbReady = false;
     private volatile static Transmitter sTransmitter;
 
     public static Transmitter getInstance(Context context) {
@@ -51,12 +54,16 @@ public class Transmitter {
     }
 
     public void start() {
+        LogUtils.d("start transmitter");
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 TowerCraneInfo curInfo = AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo();
                 String sendFav = towerCraneInfo2FormatString(curInfo);
-                if (!sendFav.isEmpty() && usbService != null) {
+                LogUtils.d("send data: " + sendFav);
+
+                sendFav = MAGIC_START + sendFav + MAGIC_END;
+                if (!sendFav.isEmpty() && usbService != null && usbReady) {
                     usbService.write(sendFav.getBytes());
                 }
             }
@@ -66,9 +73,14 @@ public class Transmitter {
     }
 
     public void stop() {
+        LogUtils.d("stop transmitter");
         if (mTimer != null) {
             mTimer.cancel();
         }
+    }
+
+    public void setUsbReady(boolean ready) {
+        usbReady = ready;
     }
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
@@ -115,6 +127,7 @@ public class Transmitter {
      */
     private static class UsbHandler extends Handler {
         private Context mContext;
+        private StringBuilder dataFilter = new StringBuilder();
 
         public UsbHandler(Context context) {
             mContext = context;
@@ -125,11 +138,7 @@ public class Transmitter {
             switch (msg.what) {
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     String data = (String) msg.obj;
-                    LogUtils.d(data);
-                    TowerCraneInfo info = formatString2TowerCraneInfo(data);
-                    if (info != null) {
-                        AntiCollisionAlgorithm.getInstance().updateTowerCrane(info);
-                    }
+                    filterData(data);
                     break;
                 case UsbService.CTS_CHANGE:
                     Toast.makeText(mContext, "CTS_CHANGE",Toast.LENGTH_LONG).show();
@@ -137,6 +146,26 @@ public class Transmitter {
                 case UsbService.DSR_CHANGE:
                     Toast.makeText(mContext, "DSR_CHANGE",Toast.LENGTH_LONG).show();
                     break;
+            }
+        }
+
+        private void filterData(String str) {
+            dataFilter.append(str);
+            int startIndex = dataFilter.indexOf(MAGIC_START);
+            int endIndex = dataFilter.indexOf(MAGIC_END);
+            if (startIndex != -1 && endIndex != -1) {
+                if (startIndex != 0) {
+                    dataFilter.delete(0, startIndex);
+                } else {
+                    String subString = dataFilter.substring(startIndex + 11, endIndex);
+                    dataFilter.delete(startIndex, endIndex + 9);
+
+                    LogUtils.d("receive data: " + subString);
+                    TowerCraneInfo info = formatString2TowerCraneInfo(subString);
+                    if (info != null) {
+                        AntiCollisionAlgorithm.getInstance().updateTowerCrane(info);
+                    }
+                }
             }
         }
     }
@@ -151,8 +180,8 @@ public class Transmitter {
                 + info.getCoordinateY() + DATA_SPLIT_SYMBOL
                 + info.getFrontArmLength()+ DATA_SPLIT_SYMBOL
                 + info.getRearArmLength() + DATA_SPLIT_SYMBOL
-                + info.getTrolleyDistance() + DATA_SPLIT_SYMBOL
                 + info.getArmToGroundHeight() + DATA_SPLIT_SYMBOL
+                + info.getTrolleyDistance() + DATA_SPLIT_SYMBOL
                 + info.getRopeLength() + DATA_SPLIT_SYMBOL
                 + info.getAngle() + DATA_SPLIT_SYMBOL
                 + info.isLiftWeightLimiterWorkFine() + DATA_SPLIT_SYMBOL
@@ -166,30 +195,34 @@ public class Transmitter {
         if (formatData == null) {
             return null;
         }
-        String[] data = formatData.split("#");
-        if (data.length < 15) {
+        String[] data = formatData.split(DATA_SPLIT_SYMBOL);
+        if (data.length != 15) {
             return null;
         }
 
-        int identifier = Integer.valueOf(data[1]);
-        String modelName = data[2];
-        float coordinateX = Float.valueOf(data[3]);
-        float coordinateY = Float.valueOf(data[4]);
-        float frontArmLength = Float.valueOf(data[5]);
-        float rearArmLength = Float.valueOf(data[6]);
-        float armToGroundHeight = Float.valueOf(data[7]);
-        float trolleyDistance = Float.valueOf(data[8]);
-        float ropeLength = Float.valueOf(data[9]);
-        float angle = Float.valueOf(data[10]);
-        boolean liftWeightLimiter = data[11].equals("true");
-        boolean liftHeightLimiter = data[12].equals("true");
-        boolean torqueLimiter = data[13].equals("true");
-        boolean overstrokeLimiter = data[14].equals("true");
-        boolean slewingLimiter = data[15].equals("true");
-
-        return new TowerCraneInfo(identifier, modelName, coordinateX, coordinateY,
-                frontArmLength, rearArmLength, armToGroundHeight, trolleyDistance, ropeLength,
-                angle, liftWeightLimiter, liftHeightLimiter, torqueLimiter, overstrokeLimiter,
-                slewingLimiter);
+        try {
+            int identifier = Integer.valueOf(data[0]);
+            String modelName = data[1];
+            float coordinateX = Float.valueOf(data[2]);
+            float coordinateY = Float.valueOf(data[3]);
+            float frontArmLength = Float.valueOf(data[4]);
+            float rearArmLength = Float.valueOf(data[5]);
+            float armToGroundHeight = Float.valueOf(data[6]);
+            float trolleyDistance = Float.valueOf(data[7]);
+            float ropeLength = Float.valueOf(data[8]);
+            float angle = Float.valueOf(data[9]);
+            boolean liftWeightLimiter = data[10].equals("true");
+            boolean liftHeightLimiter = data[11].equals("true");
+            boolean torqueLimiter = data[12].equals("true");
+            boolean overstrokeLimiter = data[13].equals("true");
+            boolean slewingLimiter = data[14].equals("true");
+            return new TowerCraneInfo(identifier, modelName, coordinateX, coordinateY,
+                    frontArmLength, rearArmLength, armToGroundHeight, trolleyDistance, ropeLength,
+                    angle, liftWeightLimiter, liftHeightLimiter, torqueLimiter, overstrokeLimiter,
+                    slewingLimiter);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -46,6 +46,8 @@
 
     <string name="developer_options_add_towercrane">Add Tower Crane</string>
     <string name="developer_options_remove_towercrane">Remove Current Tower Crane</string>
-    <string name="developer_options_run_text">Simulation Start</string>
+    <string name="developer_options_wireless_transmission_text">Wireless Transmission</string>
+    <string name="developer_options_single_run_text">Single Simulation Start</string>
+    <string name="developer_options_all_run_text">All Simulation Start</string>
     <string name="developer_options_editable_text">Panel Data Editable</string>
 </resources>

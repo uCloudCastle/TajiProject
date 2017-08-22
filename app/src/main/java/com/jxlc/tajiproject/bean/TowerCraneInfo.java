@@ -1,7 +1,6 @@
 package com.jxlc.tajiproject.bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 塔吊必备限制器:
@@ -24,24 +23,24 @@ import java.util.List;
  */
 
 public class TowerCraneInfo {
-    private List<InfoListener> mListeners;
-    private int identifier;          // id
-    private String modelName;        // 型号名称
+    private CopyOnWriteArrayList<InfoListener> mListeners;
+    public int identifier;          // id
+    public String modelName;        // 型号名称
 
-    private float coordinateX;         // x
-    private float coordinateY;         // y
-    private float frontArmLength;      // 前臂长
-    private float rearArmLength;       // 后臂长
-    private float armToGroundHeight;   // 塔机高度
-    private float trolleyDistance;     // 小车行距
-    private float ropeLength;          // 吊绳长度
-    private float angle;             // 旋臂角度
+    public float coordinateX;         // x
+    public float coordinateY;         // y
+    public float frontArmLength;      // 前臂长
+    public float rearArmLength;       // 后臂长
+    public float armToGroundHeight;   // 塔机高度
+    public float trolleyDistance;     // 小车行距
+    public float ropeLength;          // 吊绳长度
+    public float angle;             // 旋臂角度
 
-    private boolean liftWeightLimiter;  // 起升重量限制器
-    private boolean liftHeightLimiter;  // 起升高度限制器
-    private boolean torqueLimiter;      // 力矩限制器
-    private boolean overstrokeLimiter;  // 行程限制器
-    private boolean slewingLimiter;     // 回转限制器
+    public boolean liftWeightLimiter;  // 起升重量限制器
+    public boolean liftHeightLimiter;  // 起升高度限制器
+    public boolean torqueLimiter;      // 力矩限制器
+    public boolean overstrokeLimiter;  // 行程限制器
+    public boolean slewingLimiter;     // 回转限制器
 
     public TowerCraneInfo(int id, int coordinateX, int coordinateY, int frontArmLength, int rearArmLength,
                           int armToGroundHeight, int trolleyDistance, int ropeLength, float angle) {
@@ -67,7 +66,7 @@ public class TowerCraneInfo {
         this.torqueLimiter = isTorqueLimiterWorkFine;
         this.overstrokeLimiter = isOverstrokeLimiterWorkFine;
         this.slewingLimiter = isSlewingLimiterWorkFine;
-        mListeners = new ArrayList<>();
+        mListeners = new CopyOnWriteArrayList<>();
     }
 
     public static TowerCraneInfo getDemoInfo() {
