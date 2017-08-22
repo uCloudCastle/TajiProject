@@ -16,19 +16,11 @@
 
 package com.jxlc.tajiproject.ui;
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -41,24 +33,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
-import com.jxlc.tajiproject.transmitter.usbserial.UsbReceiver;
-import com.jxlc.tajiproject.transmitter.usbserial.UsbService;
+import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.jxlc.tajiproject.ui.fragment.ContentFragment;
-import com.randal.aviana.LogUtils;
 import com.unity3d.player.UnityPlayer;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.codetail.animation.SupportAnimator;
@@ -94,9 +81,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         getWindow().setFormat(PixelFormat.RGBX_8888);
         mUnityPlayer = new UnityPlayer(this);
 
-        mHandler = new UsbHandler(this);
-        usbReceiver = new UsbReceiver();
-
         setContentView(R.layout.activity_main);
         contentFragment = ContentFragment.newInstance(curLayout);
         contentFragment.setUnityPlayer(mUnityPlayer);
@@ -116,9 +100,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         initValues();
         setActionBar();
         createMenuList();
+
+        Transmitter.getInstance(MainActivity.this).start();
     }
-
-
 
     // set the globe init values here
     private void initValues() {
@@ -324,8 +308,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override protected void onResume() {
         super.onResume();
         mUnityPlayer.resume();
-        setFilters();  // Start listening notifications from UsbService
-        startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
     // Quit Unity
@@ -340,8 +322,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     {
         super.onPause();
         mUnityPlayer.pause();
-        unregisterReceiver(usbReceiver);
-        unbindService(usbConnection);
     }
 
     // Notify Unity of the focus change.
@@ -371,70 +351,4 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override public boolean onKeyDown(int keyCode, KeyEvent event)   { return mUnityPlayer.injectEvent(event); }
     @Override public boolean onTouchEvent(MotionEvent event)          { return mUnityPlayer.injectEvent(event); }
     /*API12*/ public boolean onGenericMotionEvent(MotionEvent event)  { return mUnityPlayer.injectEvent(event); }
-
-
-    /* Do for Transmitter */
-    private UsbService usbService;
-    private UsbReceiver usbReceiver;
-    private UsbHandler mHandler;
-    private final ServiceConnection usbConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
-            usbService = ((UsbService.UsbBinder) arg1).getService();
-            usbService.setHandler(mHandler);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            usbService = null;
-        }
-    };
-    private static class UsbHandler extends Handler {
-        private final WeakReference<MainActivity> mActivity;
-        public UsbHandler(MainActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case UsbService.MESSAGE_FROM_SERIAL_PORT:
-                    String data = (String) msg.obj;
-                    LogUtils.d(data);
-                    break;
-                case UsbService.CTS_CHANGE:
-                    Toast.makeText(mActivity.get(), "CTS_CHANGE",Toast.LENGTH_LONG).show();
-                    break;
-                case UsbService.DSR_CHANGE:
-                    Toast.makeText(mActivity.get(), "DSR_CHANGE",Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-    }
-
-    private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
-        if (!UsbService.SERVICE_CONNECTED) {
-            Intent startService = new Intent(this, service);
-            if (extras != null && !extras.isEmpty()) {
-                Set<String> keys = extras.keySet();
-                for (String key : keys) {
-                    String extra = extras.getString(key);
-                    startService.putExtra(key, extra);
-                }
-            }
-            startService(startService);
-        }
-        Intent bindingIntent = new Intent(this, service);
-        bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    private void setFilters() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
-        filter.addAction(UsbService.ACTION_NO_USB);
-        filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
-        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
-        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
-        registerReceiver(usbReceiver, filter);
-    }
 }

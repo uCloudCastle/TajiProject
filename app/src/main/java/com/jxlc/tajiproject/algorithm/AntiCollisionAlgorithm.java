@@ -91,6 +91,29 @@ public class AntiCollisionAlgorithm implements InfoListener {
         }
     }
 
+    public void updateTowerCrane(TowerCraneInfo info) {
+        if (isIdExist(info.getIdentifier())) {
+            TowerCraneInfo localInfo = getTowerCraneInfoById(info.getIdentifier());
+            localInfo.setModelName(info.getModelName());
+            localInfo.setCoordinateX(info.getCoordinateX());
+            localInfo.setCoordinateY(info.getCoordinateY());
+            localInfo.setFrontArmLength(info.getFrontArmLength());
+            localInfo.setRearArmLength(info.getRearArmLength());
+            localInfo.setArmToGroundHeight(info.getArmToGroundHeight());
+            localInfo.setTrolleyDistance(info.getTrolleyDistance());
+            localInfo.setRopeLength(info.getRopeLength());
+            localInfo.setAngle(info.getAngle());
+            localInfo.setLiftWeightLimiterWorkStatus(info.isLiftWeightLimiterWorkFine());
+            localInfo.setLiftHeightLimiterWorkStatus(info.isLiftHeightLimiterWorkFine());
+            localInfo.setTorqueLimiterWorkStatus(info.isTorqueLimiterWorkFine());
+            localInfo.setOverstrokeLimiterWorkStatus(info.isOverstrokeLimiterWorkFine());
+            localInfo.setSlewingLimiterWorkStatus(info.isSlewingLimiterWorkFine());
+            updatePairMap();
+        } else {
+            addTowerCrane(info);
+        }
+    }
+
     public boolean removeTowerCraneById(int id) {
         for (TowerCraneInfo info : mTCInfoList) {
             if (info.getIdentifier() == id) {
