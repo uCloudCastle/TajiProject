@@ -49,21 +49,30 @@ public class Transmitter {
         mContext = context;
         mHandler = new UsbHandler(context);
         usbReceiver = new UsbReceiver();
+    }
+
+    public void onResume() {
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
+    public void onPause() {
+        mContext.unregisterReceiver(usbReceiver);
+        mContext.unbindService(usbConnection);
+    }
+
     public void start() {
         LogUtils.d("start transmitter");
+
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 TowerCraneInfo curInfo = AntiCollisionAlgorithm.getInstance().getCurTowerCraneInfo();
                 String sendFav = towerCraneInfo2FormatString(curInfo);
-                LogUtils.d("send data: " + sendFav);
 
                 sendFav = MAGIC_START + sendFav + MAGIC_END;
                 if (!sendFav.isEmpty() && usbService != null && usbReady) {
+                    LogUtils.d("send data: " + sendFav);
                     usbService.write(sendFav.getBytes());
                 }
             }

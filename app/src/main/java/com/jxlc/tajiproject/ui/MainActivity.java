@@ -38,6 +38,7 @@ import com.jxlc.tajiproject.R;
 import com.jxlc.tajiproject.algorithm.AntiCollisionAlgorithm;
 import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
+import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.jxlc.tajiproject.ui.fragment.ContentFragment;
 import com.unity3d.player.UnityPlayer;
 
@@ -305,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override protected void onResume() {
         super.onResume();
         mUnityPlayer.resume();
+        Transmitter.getInstance(MainActivity.this).onResume();
     }
 
     // Quit Unity
@@ -319,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     {
         super.onPause();
         mUnityPlayer.pause();
+        Transmitter.getInstance(MainActivity.this).onPause();
     }
 
     // Notify Unity of the focus change.
