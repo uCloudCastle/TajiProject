@@ -92,6 +92,10 @@ public class Transmitter {
         usbReady = ready;
     }
 
+    public boolean isUsbReady() {
+        return usbReady;
+    }
+
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
         if (!UsbService.SERVICE_CONNECTED) {
             Intent startService = new Intent(mContext, service);

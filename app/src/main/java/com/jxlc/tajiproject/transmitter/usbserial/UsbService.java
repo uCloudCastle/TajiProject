@@ -16,6 +16,7 @@ import android.os.IBinder;
 import com.felhr.usbserial.CDCSerialDevice;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
+import com.randal.aviana.LogUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -96,6 +97,7 @@ public class UsbService extends Service {
     private final BroadcastReceiver usbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context arg0, Intent arg1) {
+            LogUtils.d("usb action = " + arg1.getAction());
             if (arg1.getAction().equals(ACTION_USB_PERMISSION)) {
                 boolean granted = arg1.getExtras().getBoolean(UsbManager.EXTRA_PERMISSION_GRANTED);
                 if (granted) // User accepted our USB connection. Try to open the device as a serial port
@@ -173,14 +175,20 @@ public class UsbService extends Service {
     private void findSerialPortDevice() {
         // This snippet will try to open the first encountered usb device connected, excluding usb root hubs
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
+        LogUtils.d("usb devices isEmpty: " + usbDevices.isEmpty());
         if (!usbDevices.isEmpty()) {
             boolean keep = true;
             for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
+                LogUtils.d("Key = " + entry.getKey()
+                        + "\nDeviceName = " + entry.getValue().getDeviceName()
+                        + "\nVendorId = " + entry.getValue().getVendorId()
+                        + "\nProductId = " + entry.getValue().getProductId());
+
                 device = entry.getValue();
                 int deviceVID = device.getVendorId();
                 int devicePID = device.getProductId();
 
-                if (deviceVID != 0x1d6b && (devicePID != 0x0001 && devicePID != 0x0002 && devicePID != 0x0003)) {
+                if (deviceVID != 0x1d6b && (devicePID != 0x0001 && devicePID != 0x0002 && devicePID != 0x0003) && !entry.getKey().endsWith("002")) {
                     // There is a device connected to our Android device. Try to open it as a Serial Port.
                     requestUserPermission();
                     keep = false;

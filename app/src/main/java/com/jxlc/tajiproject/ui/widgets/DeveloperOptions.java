@@ -16,6 +16,9 @@ import com.jxlc.tajiproject.bean.EnvironmentInfo;
 import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.randal.aviana.LogUtils;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by Randal on 2017-05-16.
@@ -85,10 +88,19 @@ public class DeveloperOptions extends LinearLayout {
         mWirelessSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    Transmitter.getInstance(mContext).start();
+                LogUtils.d("access");
+                if (!Transmitter.getInstance(mContext).isUsbReady()) {
+                    new SweetAlertDialog(mContext)
+                            .setTitleText("Remind")
+                            .setContentText("无线状态不可用,请尝试重新连接无线设备!\n")
+                            .show();
+                    mWirelessSwitch.setChecked(false);
                 } else {
-                    Transmitter.getInstance(mContext).stop();
+                    if (b) {
+                        Transmitter.getInstance(mContext).start();
+                    } else {
+                        Transmitter.getInstance(mContext).stop();
+                    }
                 }
             }
         });
