@@ -49,5 +49,6 @@
     <string name="developer_options_wireless_transmission_text">Wireless Transmission</string>
     <string name="developer_options_single_run_text">Single Simulation Start</string>
     <string name="developer_options_all_run_text">All Simulation Start</string>
+    <string name="developer_options_show_debug_3d_button">Show 3D Debug Button</string>
     <string name="developer_options_editable_text">Panel Data Editable</string>
 </resources>

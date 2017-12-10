@@ -70,7 +70,7 @@ public class TowerCraneInfo {
     }
 
     public static TowerCraneInfo getDemoInfo() {
-        return new TowerCraneInfo(1, "ZSL750", 200, 200, 60, 5, 100, 40, 20, 60, true, true, true, true, true);
+        return new TowerCraneInfo(1, "ZSL750", 500, 200, 60, 5, 100, 40, 20, 180, true, true, true, true, true);
     }
 
     public void addListener(InfoListener l) {

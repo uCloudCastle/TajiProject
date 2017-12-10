@@ -17,6 +17,7 @@ import com.jxlc.tajiproject.bean.TowerCraneInfo;
 import com.jxlc.tajiproject.transmitter.Transmitter;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.randal.aviana.LogUtils;
+import com.unity3d.player.UnityPlayer;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -31,6 +32,7 @@ public class DeveloperOptions extends LinearLayout {
     private SwitchButton mWirelessSwitch;
     private SwitchButton mSingleRunSwitch;
     private SwitchButton mAllRunSwitch;
+    private SwitchButton mShowUnityBtnSwitch;
 
     public DeveloperOptions(@NonNull Context context) {
         this(context, null);
@@ -72,6 +74,10 @@ public class DeveloperOptions extends LinearLayout {
                 info.setCoordinateX(x);
                 info.setCoordinateY(y);
                 AntiCollisionAlgorithm.getInstance().addTowerCrane(info);
+
+                float[] cod = coordinateTransformation(x, y);
+                LogUtils.d(cod[0] + " " + cod[1]);
+                UnityPlayer.UnitySendMessage("CanvasCtrol", "OnAndroidAddTowerCrane", tid + "#" + cod[0] + "#" + cod[1]);
             }
         });
 
@@ -81,6 +87,7 @@ public class DeveloperOptions extends LinearLayout {
             public void onClick(View view) {
                 int id = AntiCollisionAlgorithm.getInstance().getCheckTowerId();
                 AntiCollisionAlgorithm.getInstance().removeTowerCraneById(id);
+                UnityPlayer.UnitySendMessage("CanvasCtrol", "OnAndroidRemoveTowerCrane", "" + id);
             }
         });
 
@@ -127,11 +134,36 @@ public class DeveloperOptions extends LinearLayout {
                 if (b) {
                     AntiCollisionAlgorithm.getInstance().stop();
                     AntiCollisionAlgorithm.getInstance().run(false);
+                    UnityPlayer.UnitySendMessage("CanvasCtrol", "onAndroidResumeAllTowerCrane", "");
                 } else {
                     AntiCollisionAlgorithm.getInstance().stop();
+                    UnityPlayer.UnitySendMessage("CanvasCtrol", "onAndroidStopAllTowerCrane", "");
                 }
             }
         });
         mAllRunSwitch.setChecked(true);
+
+        mShowUnityBtnSwitch = (SwitchButton)findViewById(R.id.developer_show_unity_btn_switch_button);
+        mShowUnityBtnSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    UnityPlayer.UnitySendMessage("CanvasCtrol", "OnAndroidSetButtonActive", "true");
+                } else {
+                    UnityPlayer.UnitySendMessage("CanvasCtrol", "OnAndroidSetButtonActive", "false");
+                }
+            }
+        });
+        mShowUnityBtnSwitch.setChecked(true);
+    }
+
+    // 0,0 -> -500, -500
+    // 1000,1000 -> 500, 500
+    // Unity's origin is in center
+    private float[] coordinateTransformation(float x, float y) {
+        float[] retCod = new float[2];
+        retCod[0] = x - 500;
+        retCod[1] = y - 500;
+        return retCod;
     }
 }

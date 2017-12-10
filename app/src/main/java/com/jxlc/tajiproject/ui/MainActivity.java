@@ -115,36 +115,21 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         EnvironmentInfo enInfo = EnvironmentInfo.getInstance();
         enInfo.setWindSpeed(6.5f);
         enInfo.setTemperature(16.6f);
-        enInfo.setConstructionSiteWidth(800);
-        enInfo.setConstructionSiteHeight(800);
+        enInfo.setConstructionSiteWidth(1000);
+        enInfo.setConstructionSiteHeight(1000);
 
         List<TowerCraneInfo> demoList = new ArrayList<>();
         TowerCraneInfo info1 = TowerCraneInfo.getDemoInfo();
         info1.setIdentifier(1);
-        info1.setAngle(120);
+        info1.setAngle(180);
         demoList.add(info1);
         TowerCraneInfo info2 = TowerCraneInfo.getDemoInfo();
         info2.setIdentifier(2);
-        info2.setCoordinateX(info2.getCoordinateX() + info2.getFrontArmLength() + 30);
-        info2.setCoordinateY(info2.getCoordinateY() - info2.getFrontArmLength() + 40);
+        info2.setCoordinateX(590);
+        info2.setCoordinateY(180);
         info2.setAngle(240);
         demoList.add(info2);
-        TowerCraneInfo info3 = TowerCraneInfo.getDemoInfo();
-        info3.setIdentifier(3);
-        info3.setCoordinateX(400);
-        info3.setCoordinateY(400);
-        info3.setFrontArmLength(80);
-        info3.setRearArmLength(12);
-        info3.setAngle(270);
-        demoList.add(info3);
-        TowerCraneInfo info4 = TowerCraneInfo.getDemoInfo();
-        info4.setIdentifier(4);
-        info4.setCoordinateX(475);
-        info4.setCoordinateY(440);
-        info4.setFrontArmLength(80);
-        info4.setRearArmLength(12);
-        info4.setAngle(100);
-        demoList.add(info4);
+
         AntiCollisionAlgorithm.getInstance().setTowerCraneList(demoList);
         AntiCollisionAlgorithm.getInstance().setCheckTowerId(demoList.get(0).getIdentifier());
     }

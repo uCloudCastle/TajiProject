@@ -48,5 +48,6 @@
     <string name="developer_options_wireless_transmission_text">无线收发</string>
     <string name="developer_options_single_run_text">单塔模拟运行</string>
     <string name="developer_options_all_run_text">群塔模拟运行</string>
+    <string name="developer_options_show_debug_3d_button">显示3d调试按钮</string>
     <string name="developer_options_editable_text">数据面板可编辑</string>
 </resources>

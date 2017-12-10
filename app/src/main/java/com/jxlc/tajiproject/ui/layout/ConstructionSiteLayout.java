@@ -153,6 +153,16 @@ public class ConstructionSiteLayout extends RelativeLayout implements InfoListCh
         });
     }
 
+    // 0,0 -> -500, -500
+    // 1000,1000 -> 500, 500
+    // Unity's origin is in center
+    private float[] coordinateTransformation(float x, float y) {
+        float[] retCod = new float[2];
+        retCod[0] = x - 500;
+        retCod[1] = y - 500;
+        return retCod;
+    }
+
     private Animator getLoadAnimation() {
         AnimatorSet animation = new AnimatorSet();
 

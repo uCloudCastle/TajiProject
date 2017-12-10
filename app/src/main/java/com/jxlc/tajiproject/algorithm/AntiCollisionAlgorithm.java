@@ -249,7 +249,7 @@ public class AntiCollisionAlgorithm implements InfoListener {
             if (info.getAngle() >= 360) {
                 info.setAngle(0);
             }
-            info.setAngle(info.getAngle() + 3);
+            info.setAngle(info.getAngle() + 12);
 
             if (info.getTrolleyDistance() >= 40) {
                 info.setTrolleyDistance(20);
